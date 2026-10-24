@@ -1,0 +1,1677 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Записи">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#1d2030">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Unbounded:wght@500;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Unbounded:wght@500;700;800&display=swap"></noscript>
+<title>Записи</title>
+<script>try{var t=((JSON.parse(localStorage.getItem('booking.v1'))||{}).prefsLocal||{}).theme;if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>
+:root{
+  --f-body:"Golos Text",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --f-wide:"Unbounded","Golos Text",-apple-system,sans-serif;
+  --ease:cubic-bezier(.2,.9,.25,1);
+  --r-card:36px; --r-row:22px;
+  /* тёмная тема — по умолчанию */
+  color-scheme:dark;
+  --bg1:#1e2131; --bg2:#1b1b24; --bg3:#271f28;
+  --surface:#111114; --surface2:#19191f; --surface3:#24242c;
+  --text:#efe8e1; --muted:#8d8892; --dim:#3a3138; --line:rgba(255,255,255,.06);
+  --accent:#d98c6c; --accent-ink:#1c1311; --accent-soft:rgba(217,140,108,.14);
+  --lilac:#c9a8e8; --lilac-ink:#24152f;
+  --green:#86d19f; --red:#ff8270; --gray:#6f6b75; --tg:#7cb7ff;
+  --nav:rgba(44,47,62,.78); --sheet:#141418; --shadow:0 18px 40px rgba(0,0,0,.45);
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  color-scheme:light;
+  --bg1:#f3eee9; --bg2:#efe8e2; --bg3:#ebe1da;
+  --surface:#ffffff; --surface2:#f6f1ec; --surface3:#ece4dd;
+  --text:#211b18; --muted:#8e837b; --dim:#dccdc3; --line:rgba(60,30,20,.08);
+  --accent:#c4704f; --accent-ink:#fff8f4; --accent-soft:rgba(196,112,79,.12);
+  --lilac:#b38ad9; --lilac-ink:#fff;
+  --green:#2f9e5f; --red:#d9493b; --gray:#9a9198; --tg:#2a8be0;
+  --nav:rgba(255,255,255,.78); --sheet:#fbf8f5; --shadow:0 14px 34px rgba(80,40,20,.12);
+}}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg1:#f3eee9; --bg2:#efe8e2; --bg3:#ebe1da;
+  --surface:#ffffff; --surface2:#f6f1ec; --surface3:#ece4dd;
+  --text:#211b18; --muted:#8e837b; --dim:#dccdc3; --line:rgba(60,30,20,.08);
+  --accent:#c4704f; --accent-ink:#fff8f4; --accent-soft:rgba(196,112,79,.12);
+  --lilac:#b38ad9; --lilac-ink:#fff;
+  --green:#2f9e5f; --red:#d9493b; --gray:#9a9198; --tg:#2a8be0;
+  --nav:rgba(255,255,255,.78); --sheet:#fbf8f5; --shadow:0 14px 34px rgba(80,40,20,.12);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg2)}
+html,body{margin:0;color:var(--text);font:16px/1.4 var(--f-body);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+body{min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) calc(120px + env(safe-area-inset-bottom)) env(safe-area-inset-left)}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--bg1) 0%,var(--bg2) 55%,var(--bg3) 100%)}
+.wrap{max-width:640px;margin:0 auto}
+.lbl{font:500 13px/1.3 var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+.wide{font-family:var(--f-wide);font-weight:700;letter-spacing:-.02em}
+
+/* шапка */
+header.top{display:flex;align-items:center;gap:10px;padding:14px 18px 8px;min-height:72px}
+header.top h1{flex:1;min-width:0;margin:0;font:700 clamp(19px,6vw,26px)/1.1 var(--f-wide);letter-spacing:-.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+header.top.sub h1{font-size:clamp(17px,5vw,20px);text-align:center}
+#back{display:none;border:0;background:var(--surface2);color:var(--accent);width:52px;height:52px;border-radius:50%;padding:0;flex:none;place-items:center}
+#back svg{width:22px;height:22px;display:block}
+header.top.sub #back{display:grid}
+header.top.sub #syncBadge,header.top.sub #gearBtn{display:none}
+header.top.sub::after{content:"";width:52px;flex:none}
+#syncBadge{font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface2);padding:8px 12px;border-radius:99px;white-space:nowrap}
+#syncBadge.ok::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:7px;vertical-align:1px}
+#syncBadge.err{color:var(--red)}
+.round{width:52px;height:52px;border-radius:50%;border:0;background:var(--surface2);color:var(--accent);display:grid;place-items:center;padding:0;flex:none}
+.round svg{width:22px;height:22px;transition:transform .5s var(--ease)}
+#gearBtn:active svg{transform:rotate(60deg)}
+main{padding:0 16px}
+.view-in{animation:viewIn .32s var(--ease)} .view-push{animation:push .34s var(--ease)} .view-pop{animation:pop2 .34s var(--ease)}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px)}} @keyframes push{from{opacity:0;transform:translateX(40px)}} @keyframes pop2{from{opacity:0;transform:translateX(-40px)}}
+
+/* карточки и строки */
+.card{background:var(--surface);border-radius:var(--r-card);padding:22px 24px;margin:12px 0;box-shadow:var(--shadow)}
+.sec{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:26px 6px 10px}
+.pillbtn{border:0;background:var(--surface2);color:var(--accent);font:500 12px var(--f-mono);text-transform:uppercase;letter-spacing:.07em;border-radius:99px;padding:0 16px;height:40px;white-space:nowrap;display:inline-flex;align-items:center;gap:8px}
+.pillbtn.big{height:56px;padding:0 22px;font-size:13px}
+.daytitle{font:800 34px/1.05 var(--f-wide);letter-spacing:-.04em;color:var(--dim);margin:26px 4px 6px;text-transform:lowercase}
+.rows{display:flex;flex-direction:column;gap:4px}
+.item{display:flex;align-items:center;gap:14px;padding:12px 8px;border-radius:var(--r-row);cursor:pointer;transition:background .2s, transform .15s var(--ease)}
+.item:active{background:var(--surface2);transform:scale(.985)}
+.item .main{flex:1;min-width:0}
+.item .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .s{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.amt{font:700 17px var(--f-wide);letter-spacing:-.02em;white-space:nowrap;color:var(--accent)}
+.ava{width:52px;height:52px;border-radius:18px;flex:none;display:grid;place-items:center;font:700 16px var(--f-wide);color:var(--accent);background:var(--accent-soft)}
+.ava.round-a{border-radius:50%}
+.tag{font:500 10px var(--f-mono);text-transform:uppercase;letter-spacing:.06em;padding:3px 7px;border-radius:99px;white-space:nowrap;vertical-align:1px}
+.tag.tg{color:var(--tg);background:rgba(124,183,255,.13)} .tag.bad{color:var(--red);background:rgba(255,130,112,.13)}
+.tag.bot{color:var(--lilac);background:rgba(201,168,232,.15)}
+.conf-yes{color:var(--green)} .conf-no{color:var(--red)} .conf-req{color:var(--muted)}
+.empty{color:var(--muted);text-align:center;padding:26px 16px;font:500 13px var(--f-mono);text-transform:uppercase;letter-spacing:.06em}
+.hint{font-size:13px;color:var(--muted);margin:8px 6px;line-height:1.45}
+.neg{color:var(--red)} .pos{color:var(--green)}
+.search{width:100%;height:56px;border-radius:99px;border:0;background:var(--surface2);color:var(--text);font:16px var(--f-body);padding:0 22px}
+
+/* календарь */
+.cal{padding:18px 14px 14px;touch-action:pan-y}
+.cal-head{display:flex;align-items:center;justify-content:space-between;padding:0 4px 12px}
+.cal-head b{font:700 18px var(--f-wide);letter-spacing:-.03em}
+.cal-head button{width:44px;height:44px;border-radius:50%;border:0;background:var(--surface2);color:var(--accent);font-size:20px;line-height:1;display:grid;place-items:center;padding:0}
+.dow,.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.dow span{font:500 11px var(--f-mono);text-transform:uppercase;color:var(--muted);padding:4px 0 8px}
+.dow span:nth-child(n+6){color:var(--accent)}
+.grid button{position:relative;border:0;background:none;color:var(--text);font:500 16px var(--f-body);height:46px;border-radius:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0;aspect-ratio:1;max-height:46px;margin:0 auto;width:100%;max-width:46px}
+.grid button.out{visibility:hidden}
+.grid button.today{color:var(--accent);font-weight:700;box-shadow:inset 0 0 0 1.5px var(--accent)}
+.grid button.sel{background:var(--accent);color:var(--accent-ink);font-weight:700;box-shadow:none}
+.grid button.past:not(.sel):not(.today){opacity:.45}
+.grid button.off:not(.sel){color:var(--muted)}
+.grid button.off:not(.sel)::before{content:"";position:absolute;width:14px;height:1.5px;background:var(--muted);opacity:.5;top:12px}
+.dots{display:flex;gap:3px;height:4px;position:absolute;bottom:5px}
+.dots i{width:4px;height:4px;border-radius:50%}
+.grid button.sel .dots i{background:var(--accent-ink)!important}
+.cal.slide-l .grid{animation:slideL .28s var(--ease)} .cal.slide-r .grid{animation:slideR .28s var(--ease)}
+@keyframes slideL{from{opacity:0;transform:translateX(30px)}} @keyframes slideR{from{opacity:0;transform:translateX(-30px)}}
+.appt .tm{width:58px;flex:none;text-align:left}
+.appt .tm b{display:block;font:700 16px var(--f-wide);letter-spacing:-.03em} .appt .tm span{font:400 12px var(--f-mono);color:var(--muted)}
+.appt .vbar{width:4px;align-self:stretch;border-radius:2px;flex:none;margin:4px 0}
+.st{font:500 10px var(--f-mono);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+.daysum{display:flex;justify-content:space-between;align-items:baseline;margin:10px 8px 0;color:var(--muted);font:500 12px var(--f-mono);text-transform:uppercase;letter-spacing:.06em}
+
+/* статистика */
+.money-card{position:relative;overflow:hidden;min-height:190px;padding:26px 28px}
+.money-card .big{font:800 40px/1.05 var(--f-wide);letter-spacing:-.04em;color:var(--accent);margin:14px 0 18px;font-variant-numeric:tabular-nums}
+.money-card .chip{display:inline-flex;align-items:center;height:44px;padding:0 16px;border-radius:12px;background:var(--lilac);color:var(--lilac-ink);font:500 15px var(--f-mono)}
+.money-card .ring{position:absolute;top:22px;right:24px;display:flex;align-items:center;gap:10px;font:500 14px var(--f-mono);color:var(--accent)}
+.money-card.alt .big{color:var(--text)}
+.money-card.alt .chip{background:var(--surface3);color:var(--text)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+.tile{background:var(--surface);border-radius:26px;padding:16px 14px;box-shadow:var(--shadow)}
+.tile b{display:block;font:700 18px var(--f-wide);letter-spacing:-.03em;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .lbl{font-size:10px;color:var(--muted)}
+.chart{display:flex;align-items:flex-end;gap:3px;height:120px;padding:4px 2px 0}
+.chart i{flex:1;display:flex;flex-direction:column-reverse;gap:2px;height:100%;justify-content:flex-start}
+.chart i b{display:block;border-radius:4px;background:var(--accent);min-height:0;transform-origin:bottom;animation:grow .6s var(--ease) both}
+.chart i b.exp{background:transparent;box-shadow:inset 0 0 0 1.5px var(--accent);opacity:.7}
+.chart i.today b:first-child{background:var(--lilac)}
+@keyframes grow{from{transform:scaleY(0)}}
+.chart-x{display:flex;justify-content:space-between;font:400 10px var(--f-mono);color:var(--muted);margin-top:8px}
+.month-switch{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:4px 0 6px}
+.month-switch b{font:700 18px var(--f-wide);letter-spacing:-.03em}
+.notice{display:flex;align-items:center;gap:12px;background:var(--accent-soft);color:var(--text);border-radius:24px;padding:14px 18px;margin:12px 0;cursor:pointer;border:0;width:100%;text-align:left;font:inherit}
+
+/* нижняя панель: меню и «+» справа на одной линии */
+.dock{position:fixed;z-index:6;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom));
+  width:min(440px, calc(100% - 32px));display:flex;align-items:center;gap:12px;transition:transform .35s var(--ease), opacity .3s}
+.dock.hide{transform:translate(-50%, 150%);opacity:0;pointer-events:none}
+nav.tabs{flex:1;height:72px;display:flex;align-items:center;justify-content:space-around;padding:0 10px;border-radius:99px;
+  background:var(--nav);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);box-shadow:var(--shadow)}
+nav.tabs .tab{position:relative;width:52px;height:52px;border:0;border-radius:50%;background:none;color:var(--muted);display:grid;place-items:center;padding:0;transition:color .25s, background .25s}
+nav.tabs .tab svg{width:26px;height:26px;display:block}
+nav.tabs .tab.on{color:var(--accent);background:var(--accent-soft)}
+nav.tabs .badge{position:absolute;top:4px;right:4px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--accent);color:var(--accent-ink);font:600 10px/18px var(--f-mono);text-align:center}
+#fab{flex:none;width:72px;height:72px;border-radius:50%;border:0;padding:0;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);
+  box-shadow:var(--shadow)}
+#fab svg{width:26px;height:26px;display:block}
+button{cursor:pointer;transition:transform .15s var(--ease), filter .15s, background .2s, color .2s;-webkit-user-select:none;user-select:none}
+button:active{transform:scale(.94)}
+@media (hover:hover){ .item:hover,.row:hover{background:var(--surface2)} .pillbtn:hover,.btn:hover,.round:hover{filter:brightness(1.12)} .grid button:hover:not(.sel){background:var(--surface2)} }
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* настройки */
+.group{background:var(--surface);border-radius:28px;overflow:hidden;box-shadow:var(--shadow)}
+.gtitle{margin:24px 18px 9px}
+.gfoot{font-size:13px;color:var(--muted);margin:9px 18px 0;line-height:1.45}
+.row{display:flex;align-items:center;gap:14px;width:100%;min-height:58px;padding:10px 18px;border:0;border-bottom:1px solid var(--line);
+  background:none;color:var(--text);font:inherit;text-align:left;cursor:pointer;border-radius:0}
+.row:last-child{border-bottom:0}
+.row:active{transform:none;background:var(--surface2)}
+.row .ri{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;color:var(--accent);background:var(--accent-soft)}
+.row .ri svg{width:19px;height:19px}
+.row .rl{flex:1;min-width:0}
+.row .rv{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:52%;font-size:15px}
+.row .chev{color:var(--muted);opacity:.6;font-size:20px;line-height:1}
+.row.danger{color:var(--red)} .row.action{color:var(--accent);font:500 13px var(--f-mono);text-transform:uppercase;letter-spacing:.06em}
+.row.static{cursor:default} .row.static:active{background:none}
+.row input,.row select{border:0;background:none;padding:6px 0;text-align:right;box-shadow:none!important;border-radius:0;flex:1;min-width:0;font-size:16px;height:auto}
+.row .check-mark{color:var(--accent);font-weight:700;font-size:18px}
+.tarea{padding:12px 16px}
+.tarea textarea{border:0;background:none;padding:2px;box-shadow:none!important;min-height:84px}
+.sw{position:relative;width:51px;height:31px;flex:none}
+.sw input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1;height:auto}
+.sw span{position:absolute;inset:0;border-radius:99px;background:var(--surface3);transition:background .25s}
+.sw span::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25);transition:transform .25s var(--ease)}
+.sw input:checked + span{background:var(--accent)}
+.sw input:checked + span::after{transform:translateX(20px)}
+.daychips{display:flex;gap:6px;padding:12px 16px;flex-wrap:wrap}
+.daychips button{width:42px;height:42px;border-radius:50%;border:0;background:var(--surface2);color:var(--muted);font:500 12px var(--f-mono);text-transform:uppercase;padding:0}
+.daychips button.on{background:var(--accent);color:var(--accent-ink)}
+.log{font:12px/1.5 var(--f-mono);padding:12px 16px;max-height:340px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.log .e{color:var(--red)}
+
+/* шторки */
+dialog{position:fixed;inset:auto 0 0 0;margin:0 auto;border:0;padding:0;width:100%;max-width:600px;max-height:92dvh;color:var(--text);
+  border-radius:40px 40px 0 0;overflow:auto;overscroll-behavior:contain;background:var(--sheet);box-shadow:0 -10px 50px rgba(0,0,0,.45)}
+dialog[open]{animation:sheetUp .4s var(--ease)}
+dialog.closing{animation:sheetDown .22s ease-in forwards}
+dialog::backdrop{background:rgba(8,6,12,.55);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:fade .3s}
+dialog.closing::backdrop,dialog.drag-closing::backdrop{animation:fade .22s reverse forwards}
+@keyframes sheetUp{from{transform:translateY(100%)}} @keyframes sheetDown{to{transform:translateY(100%)}} @keyframes fade{from{opacity:0}}
+dialog form{padding:10px 20px calc(24px + env(safe-area-inset-bottom))}
+.grab{outline:none;width:44px;height:5px;border-radius:3px;margin:2px auto 14px;background:var(--surface3)}
+dialog h3{margin:2px 0 14px;font:700 22px var(--f-wide);letter-spacing:-.03em}
+label{display:block;margin:16px 6px 7px;font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+input,select,textarea{width:100%;font:16px var(--f-body);color:var(--text);background:var(--surface2);border:1.5px solid transparent;border-radius:20px;
+  padding:0 18px;height:54px;-webkit-appearance:none;appearance:none;transition:border-color .2s}
+textarea{min-height:96px;padding:14px 18px;resize:vertical;line-height:1.45;height:auto}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+input[type=date],input[type=datetime-local]{min-height:54px}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23d98c6c' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 18px center;padding-right:40px}
+.row select{background-position:right 0 center;padding-right:20px}
+.timepick{display:flex;align-items:center;gap:4px}
+.timepick select{flex:1;min-width:0;text-align:center;text-align-last:center;font:700 17px var(--f-wide);letter-spacing:-.02em;padding:0 20px 0 8px;background-position:right 8px center}
+.timepick span{font:700 18px var(--f-wide);color:var(--muted)}
+.seg{position:relative;display:flex;background:var(--surface2);border-radius:99px;padding:4px}
+.seg .pill{position:absolute;top:4px;bottom:4px;left:4px;border-radius:99px;background:var(--accent);transition:transform .3s var(--ease)}
+.seg button{position:relative;flex:1;border:0;background:none;font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.04em;padding:12px 4px;color:var(--muted);z-index:1}
+.seg button.on{color:var(--accent-ink)}
+.seg button:active{transform:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.btns{display:flex;gap:10px;margin-top:22px}
+.btn{flex:1;border:0;border-radius:99px;height:58px;padding:0 18px;font:500 13px var(--f-mono);text-transform:uppercase;letter-spacing:.07em;background:var(--surface2);color:var(--text)}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.tg{background:var(--surface2);color:var(--tg)}
+.btn.danger{color:var(--red)}
+.btn:disabled{opacity:.4}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.chips button{border:0;background:var(--surface2);color:var(--text);border-radius:99px;padding:8px 13px;font:500 12px var(--f-mono)}
+.combo-list{margin-top:8px;border-radius:22px;max-height:220px;overflow:auto;overscroll-behavior:contain;background:var(--surface2);animation:viewIn .2s var(--ease)}
+.combo-list[hidden]{display:none}
+.opt{display:block;width:100%;text-align:left;border:0;background:none;color:var(--text);font:inherit;padding:13px 18px;border-bottom:1px solid var(--line)}
+.opt:last-child{border-bottom:0} .opt small{color:var(--muted);margin-left:6px}
+.opt.act,.opt:hover{background:var(--accent-soft)} .opt.custom{color:var(--accent);font-weight:600} .opt:active{transform:none}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.kv:last-child{border-bottom:0} .kv span{color:var(--muted)}
+.check{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer;margin:0;font:16px var(--f-body);text-transform:none;letter-spacing:0;color:var(--text)}
+.check:last-child{border-bottom:0}
+.check input{width:22px;height:22px;flex:none;accent-color:var(--accent);-webkit-appearance:auto;appearance:auto;padding:0}
+.preview{white-space:pre-wrap;background:var(--surface2);border-radius:22px 22px 22px 6px;padding:12px 16px;font-size:15px}
+.timehint{display:flex;justify-content:space-between;gap:10px;margin:8px 6px 0;font:500 12px var(--f-mono);color:var(--muted)}
+
+/* чат */
+dialog.chat-mode{height:88dvh}
+dialog.chat-mode form{padding:0;height:100%;display:flex;flex-direction:column}
+.chat-head{padding:10px 20px 10px;flex:none}
+.chat-head .who{display:flex;align-items:center;gap:12px}
+.chat-head .who h3{margin:0;font-size:19px}
+.chat-appt{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface2);border-radius:20px;padding:10px 12px 10px 16px;margin-top:12px;font-size:14px}
+.chat-msgs{flex:1;overflow:auto;padding:6px 16px 10px;display:flex;flex-direction:column;gap:6px;overscroll-behavior:contain}
+.bub{max-width:82%;padding:10px 14px;border-radius:22px;white-space:pre-wrap;word-break:break-word;font-size:15px;line-height:1.4}
+.bub.in{align-self:flex-start;background:var(--surface2);border-bottom-left-radius:8px}
+.bub.out{align-self:flex-end;background:var(--accent-soft);border-bottom-right-radius:8px}
+.bub.sched{border:1.5px dashed var(--accent);background:none}
+.bub.sys{align-self:center;background:none;color:var(--muted);font:500 11px var(--f-mono);text-transform:uppercase;letter-spacing:.05em;text-align:center;padding:4px}
+.bub .meta{display:block;margin-top:4px;font:400 11px var(--f-mono);color:var(--muted);text-align:right}
+.bub .meta button{border:0;background:none;color:var(--red);font:inherit;padding:0 0 0 8px;text-decoration:underline}
+.chat-new{align-self:stretch;text-align:center;font:500 10px var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--accent);border-top:1px solid var(--accent-soft);padding-top:8px;margin:8px 0 2px}
+.chat-day{align-self:center;font:500 10px var(--f-mono);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:10px 0 4px}
+.composer{flex:none;display:flex;align-items:flex-end;gap:8px;padding:10px 12px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--sheet)}
+.composer textarea{min-height:48px;max-height:140px;height:48px;border-radius:24px;padding:12px 16px;resize:none}
+.composer .round{width:48px;height:48px}
+.composer .send{background:var(--accent);color:var(--accent-ink)}
+.composer .round.on{background:var(--accent-soft)}
+.sched-row{display:flex;align-items:center;gap:8px;padding:0 12px 6px;flex:none}
+.sched-row[hidden]{display:none}
+.sched-row input{height:44px;border-radius:16px}
+
+#toast{cursor:pointer;position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));z-index:50;transform:translate(-50%,-180%);
+  padding:12px 20px;border-radius:99px;background:var(--surface3);color:var(--text);font:500 12px var(--f-mono);text-transform:uppercase;letter-spacing:.05em;
+  box-shadow:var(--shadow);transition:transform .35s var(--ease);max-width:calc(100% - 32px);text-align:center}
+#toast.show{transform:translate(-50%,0)}
+
+@media (min-width:768px){
+  header.top{padding-top:28px}
+  dialog{inset:0;margin:auto;border-radius:40px;max-height:86vh}
+  dialog.chat-mode{height:80vh}
+  dialog[open]{animation:pop .3s var(--ease)} dialog.closing{animation:popOut .18s ease-in forwards}
+  @keyframes pop{from{opacity:0;transform:scale(.94) translateY(12px)}} @keyframes popOut{to{opacity:0;transform:scale(.96)}}
+  .grab{visibility:hidden}
+  .grid button{height:54px;max-height:54px;max-width:54px}
+}
+@media (max-width:360px){ .money-card .big{font-size:32px} .tiles b{font-size:15px} }
+@media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top" id="hdr">
+    <button id="back" type="button" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <h1 id="title">Календарь</h1>
+    <span id="syncBadge"></span>
+    <button id="gearBtn" class="round" type="button" aria-label="Настройки" title="Настройки"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+  </header>
+  <main id="view"></main>
+</div>
+<div class="dock" id="dock">
+<nav class="tabs" aria-label="Разделы">
+  <button class="tab on" data-tab="cal" aria-label="Календарь" title="Календарь"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16.5" rx="4"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></button>
+  <button class="tab" data-tab="clients" aria-label="Клиенты" title="Клиенты"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.8a3.3 3.3 0 0 1 0 6.4M18 14.6c1.9.7 3 2.6 3.5 5.4"/></svg></button>
+  <button class="tab" data-tab="stats" aria-label="Статистика" title="Статистика"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 2.6A9 9 0 0 1 21.4 9H15z"/></svg></button>
+  <button class="tab" data-tab="chats" aria-label="Чаты" title="Чаты"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8.5 8.5 0 0 1-12.4 7.5L3 21l1.6-5A8.5 8.5 0 1 1 21 12z"/></svg><span class="badge" id="chatBadge" hidden></span></button>
+</nav>
+<button id="fab" type="button" aria-label="Добавить (N)" title="Добавить (N)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+</div>
+<dialog id="sheet"><form id="sheetForm" method="dialog"></form></dialog>
+<input type="file" id="filePick" hidden>
+<div id="toast" role="status"></div>
+
+<script>
+'use strict';
+const APP_VERSION = '2.1';
+const LS = 'booking.v1';
+const STATUS = {
+  booked:   ['Записан',   'var(--accent)'],
+  done:     ['Завершено', 'var(--green)'],
+  noshow:   ['Не пришёл', 'var(--red)'],
+  canceled: ['Отменено',  'var(--gray)'],
+};
+const CONFIRM = { yes:['подтвердил ✓','conf-yes'], requested:['ждём «+»','conf-req'], no:['не придёт ✗','conf-no'] };
+const DEFAULT_PREFS = {
+  businessName: '', businessAddress: '', businessPhone: '',
+  welcomeText: 'Здравствуйте, {имя}! Вы подписались на уведомления о записях. Сюда будут приходить напоминания и новости.',
+  confirmText: 'Здравствуйте, {имя}! Вы записаны: {дата} в {время}, {услуга}. До встречи!',
+  confirmOffer: '1',
+  confirmReqText: 'Здравствуйте, {имя}! У вас запись {дата} в {время}, {услуга}. Подтвердите, пожалуйста: отправьте «+», если придёте, или «−», если планы изменились.',
+  confirmYesText: 'Спасибо! Запись {дата} в {время} подтверждена ✅',
+  confirmNoText: 'Спасибо, что предупредили. Мы свяжемся с вами, чтобы подобрать другое время.',
+  reminderText: 'Здравствуйте, {имя}! Напоминаем о записи: {дата} в {время}, {услуга}. Подтвердите, пожалуйста: отправьте «+», если придёте, или «−», если планы изменились.',
+  reminderEnabled: '1', reminderHours: '24', reminderAskConfirm: '1',
+  autoReplyEnabled: '0', autoReplyText: 'Спасибо за сообщение! Мы ответим в ближайшее время.',
+  stopText: 'Вы отписались от уведомлений. Чтобы подписаться снова, отправьте /start',
+  botShortDescription: '', botDescription: '',
+  botBooking: '0', workStart: '10:00', workEnd: '20:00', workDays: '1,2,3,4,5,6', slotStep: '30', bookDays: '14', bookNotice: '2',
+  bookedText: 'Вы записаны: {дата} в {время}, {услуга}. Ждём вас! {адрес}',
+  scheduleMode: 'cycle', cycleWork: '3', cycleOff: '1', cycleStart: '', slotMode: 'fixed', fixedTimes: '11:00,16:00',
+  cancelText: 'Здравствуйте, {имя}! Ваша запись {дата} в {время} отменена. Чтобы выбрать другое время, нажмите «📅 Записаться».',
+};
+// рабочий ли день по графику (смена N/M или дни недели)
+function isWorkDay(ds){
+  const p = S.prefs;
+  if (p.scheduleMode === 'cycle'){
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(p.cycleStart || '')) return true;
+    const w = Math.max(1, Number(p.cycleWork) || 3), o = Math.max(0, Number(p.cycleOff) || 0), n = w + o;
+    const diff = Math.round((parseYMD(ds) - parseYMD(p.cycleStart)) / 864e5);
+    return ((diff % n) + n) % n < w;
+  }
+  return String(p.workDays).split(',').includes(String(parseYMD(ds).getDay() || 7));
+}
+const fixedTimes = () => String(S.prefs.fixedTimes || '').split(/[,;\s]+/).filter(x => /^\d{1,2}:\d{2}$/.test(x)).map(x => x.padStart(5, '0')).sort();
+const VARS = ['{имя}','{дата}','{время}','{услуга}','{салон}','{адрес}','{телефон}'];
+const SCRIPT_URL_RE = /^https:\/\/script\.google\.com\/(a\/macros\/[^/]+|macros)\/s\/[\w-]{20,}\/exec$/;
+
+const $ = id => document.getElementById(id);
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+const nowISO = () => new Date().toISOString();
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today = () => ymd(new Date());
+const parseYMD = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+const apptTime = a => { const d = parseYMD(a.date); const [h,m] = a.time.split(':').map(Number); d.setHours(h, m || 0, 0, 0); return d.getTime(); };
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s ?? '').toLowerCase().replace(/ё/g,'е');
+const num = v => { const n = parseFloat(String(v ?? '').replace(/[\s ]/g,'').replace(',','.')); return isFinite(n) ? n : 0; };
+const money = n => new Intl.NumberFormat('ru-RU', {maximumFractionDigits:0}).format(n) + ' ₽';
+const toMin = t => { const [h,m] = String(t||'0:0').split(':').map(Number); return h*60 + (m||0); };
+const fromMin = m => `${pad(Math.floor(m/60)%24)}:${pad(m%60)}`;
+const fmtDate = s => parseYMD(s).toLocaleDateString('ru-RU', {day:'numeric', month:'long'});
+const fmtShort = s => parseYMD(s).toLocaleDateString('ru-RU', {day:'numeric', month:'short'}).replace('.', '');
+const fmtWhen = iso => { if (!iso) return ''; const d = new Date(iso);
+  return (ymd(d) === today() ? '' : d.toLocaleDateString('ru-RU', {day:'numeric', month:'short'}).replace('.', '') + ' ') + d.toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit'}); };
+const toLocalInput = ms => { const d = new Date(ms); return `${ymd(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+const initials = n => String(n||'?').trim().split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase() || '?';
+const cleanUser = u => String(u || '').trim().replace(/^https?:\/\/(t\.me|telegram\.me)\//i, '').replace(/^@/, '').replace(/[^\w]/g, '');
+const cleanUrl = u => String(u).replace(/\s+/g,'').replace(/[?#].*$/,'').replace(/\/u\/\d+(?=\/)/,'').replace(/\/$/,'');
+const isTyping = () => /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName) && !document.activeElement.closest('dialog') && document.activeElement.type !== 'checkbox';
+const plural = (n, one, few, many) => { const m10 = n % 10, m100 = n % 100;
+  return m10 === 1 && m100 !== 11 ? one : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? few : many; };
+const MONTH_NOM = m => { const s = new Date(2000, m, 1).toLocaleDateString('ru-RU', {month:'long'}); return s[0].toUpperCase() + s.slice(1); };
+
+// ---------- хранилище ----------
+function loadState(){
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem(LS)); } catch(e){}
+  s = Object.assign({clients:[], services:[], appts:[], messages:[], prefs:{}, prefsLocal:{}, outbox:[], cfg:{}, log:[]}, s || {});
+  s.cfg = Object.assign({url:'', password:'', bot:'', botMode:'', hookError:'', lastSync:null, lastError:''}, s.cfg);
+  s.prefs = Object.assign({}, DEFAULT_PREFS, s.prefs);
+  s.prefsLocal = Object.assign({theme:'auto', read:{}, readSince:nowISO()}, s.prefsLocal);
+  return s;
+}
+let S = loadState();
+function save(){ try { localStorage.setItem(LS, JSON.stringify(S)); } catch(e){ toast('Не удалось сохранить на устройстве'); } }
+function log(msg, err){ S.log.push({t: nowISO(), m: String(msg), e: err ? 1 : 0}); if (S.log.length > 400) S.log = S.log.slice(-400); }
+
+const KEY = {client:'clients', service:'services', appt:'appts'};
+const clientById = id => S.clients.find(c => c.id === id);
+const svcById = id => S.services.find(s => s.id === id);
+function queue(kind, rec, deleted){
+  S.outbox = S.outbox.filter(o => !(o.kind === kind && o.data.id === rec.id));
+  S.outbox.push({kind, data:{...rec, deleted: deleted ? 'true' : ''}});
+}
+function upsert(kind, rec){
+  rec.updatedAt = nowISO(); if (!rec.createdAt) rec.createdAt = rec.updatedAt;
+  const list = S[KEY[kind]], i = list.findIndex(x => x.id === rec.id);
+  if (i >= 0) list[i] = rec; else list.push(rec);
+  queue(kind, rec);
+}
+function remove(kind, id){
+  const list = S[KEY[kind]], rec = list.find(x => x.id === id); if (!rec) return;
+  S[KEY[kind]] = list.filter(x => x.id !== id);
+  queue(kind, {...rec, updatedAt: nowISO()}, true);
+}
+function setPref(key, value){
+  if (S.prefs[key] === value) return;
+  S.prefs[key] = value;
+  queue('setting', {id:key, value, updatedAt: nowISO()});
+  save(); sync();
+}
+function commit(){ save(); render(false); sync(); }
+
+// ---------- тема ----------
+const lightMQ = matchMedia('(prefers-color-scheme: light)');
+const isLight = () => S.prefsLocal.theme === 'light' || (S.prefsLocal.theme === 'auto' && lightMQ.matches);
+function applyTheme(){
+  const t = S.prefsLocal.theme, root = document.documentElement;
+  if (t === 'auto') delete root.dataset.theme; else root.dataset.theme = t;
+  document.querySelector('meta[name=theme-color]').content = isLight() ? '#f3eee9' : '#1d2030';
+}
+function setTheme(t){
+  const run = () => { S.prefsLocal.theme = t; save(); applyTheme(); render(false); };
+  if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(run); else run();
+}
+lightMQ.addEventListener?.('change', applyTheme);
+
+// ---------- сервер ----------
+let syncing = false;
+async function api(body){
+  let r;
+  try { r = await fetch(S.cfg.url, {method:'POST', body: JSON.stringify({...body, password: S.cfg.password, hook: S.cfg.url})}); }
+  catch(e){ throw new Error('нет связи с сервером. Проверь интернет и ссылку'); }
+  const text = await r.text();
+  let j;
+  try { j = JSON.parse(text); }
+  catch(e){ throw new Error(r.status === 404 ? 'сервер не найден (404): возьми свежую ссылку в «Управление развертываниями»' : 'Google вернул страницу вместо ответа: нужен доступ «Все» и ссылка на /exec'); }
+  if (!j.ok) throw new Error(j.error || 'ошибка сервера');
+  return j;
+}
+const fixRec = {
+  client: r => r,
+  service: r => ({...r, duration: num(r.duration), price: num(r.price)}),
+  appt: r => ({...r, duration: num(r.duration), price: num(r.price)}),
+};
+function applySnapshot(j){
+  const pending = new Set(S.outbox.map(o => o.kind + ':' + o.data.id));
+  for (const [kind, list] of [['client', j.clients], ['service', j.services], ['appt', j.appts]]){
+    if (!Array.isArray(list)) continue;
+    const srv = list.filter(r => r.deleted !== 'true' && !pending.has(kind + ':' + r.id)).map(fixRec[kind]);
+    // серверные поля (подтверждение, Telegram) берём с сервера даже для записей, которые ждут отправки
+    const byId = Object.fromEntries(list.map(r => [r.id, r]));
+    const loc = S[KEY[kind]].filter(r => pending.has(kind + ':' + r.id)).map(r => {
+      const sv = byId[r.id]; if (!sv) return r;
+      if (kind === 'appt') return {...r, confirm: sv.confirm, reminded: sv.reminded};
+      if (kind === 'client') return {...r, tgChatId: sv.tgChatId, tgStatus: sv.tgStatus};
+      return r;
+    });
+    S[KEY[kind]] = [...srv, ...loc];
+  }
+  (j.settings || []).forEach(r => { if (!pending.has('setting:' + r.id)) S.prefs[r.id] = r.value; });
+  if (Array.isArray(j.messages)) S.messages = [...j.messages, ...S.messages.filter(m => m.tmp)];
+  S.cfg.bot = j.bot || ''; S.cfg.botMode = j.botMode || ''; S.cfg.hookError = j.hookError || '';
+}
+async function sync(){
+  if (syncing || !S.cfg.url || !navigator.onLine){ renderBadge(); return false; }
+  syncing = true; renderBadge();
+  const batch = S.outbox.slice(0, 300);
+  let ok = false;
+  try {
+    const j = await api({action:'sync', ops: batch.map(o => ({kind:o.kind, data:o.data}))});
+    const sent = new Set(batch);
+    S.outbox = S.outbox.filter(o => !sent.has(o));
+    applySnapshot(j);
+    if (batch.length || S.cfg.lastError) log(`Синхронизация: отправлено ${batch.length}, клиентов ${j.clients.length}, записей ${j.appts.length}`);
+    S.cfg.lastSync = nowISO(); S.cfg.lastError = ''; ok = true;
+  } catch(e){
+    if (S.cfg.lastError !== e.message) log('Ошибка синхронизации: ' + e.message, true);
+    S.cfg.lastError = e.message;
+  } finally {
+    syncing = false; save(); renderBadge(); renderChatBadge();
+    if (chatOpen) renderChatMsgs();
+    else if (!isTyping() && !sheet.open) render(false);
+  }
+  if (ok && S.outbox.length) return sync();
+  return ok;
+}
+async function sendMessages(items, quiet){
+  if (!S.cfg.url){ toast('Сначала подключи сервер: ⚙︎ → Сервер'); return null; }
+  if (!navigator.onLine){ toast('Для отправки нужен интернет'); return null; }
+  if (S.outbox.some(o => o.kind === 'client' && items.some(i => i.clientId === o.data.id))) await sync();
+  try {
+    const j = await api({action:'send', items});
+    applySnapshot(j);
+    log(`Отправка: сразу ${j.queued}, запланировано ${j.scheduled}, доставлено ${j.sent}, ошибок ${j.failed}, ждут ${j.pending}, пропущено ${j.skipped}`);
+    save();
+    if (chatOpen) renderChatMsgs(); else if (!sheet.open) render(false);
+    const parts = [];
+    if (j.sent) parts.push(`отправлено ${j.sent}`);
+    if (j.scheduled) parts.push(`запланировано ${j.scheduled}`);
+    if (j.pending) parts.push(`в очереди ${j.pending}`);
+    if (j.failed) parts.push(`ошибок ${j.failed}`);
+    if (j.skipped) parts.push(`пропущено ${j.skipped}`);
+    if (!quiet || j.failed || j.skipped) toast(parts.join(', ') || 'Готово');
+    return j;
+  } catch(e){ log('Ошибка отправки: ' + e.message, true); save(); toast('Не отправлено: ' + e.message); return null; }
+}
+async function cancelScheduled(id){
+  try { const j = await api({action:'cancelMsg', id}); applySnapshot(j); save(); toast('Отменено'); if (chatOpen) renderChatMsgs(); }
+  catch(e){ toast('Не удалось: ' + e.message); }
+}
+window.addEventListener('online', sync);
+window.addEventListener('offline', renderBadge);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); });
+setInterval(() => { if (!document.hidden) sync(); }, 40000);
+// открыт чат — каждые 4 секунды подтягиваем только новые сообщения (лёгкий запрос)
+let msgPolling = false, msgsSince = '', msgsActionMissing = false;
+async function pollMessages(){
+  if (msgPolling || !chatOpen || document.hidden || !S.cfg.url || !navigator.onLine) return;
+  if (msgsActionMissing) return sync();   // старая версия сервера — обычная синхронизация
+  msgPolling = true;
+  try {
+    const j = await api({action:'msgs', since: msgsSince});
+    msgsSince = j.serverTime || msgsSince;
+    if (j.messages && j.messages.length){
+      const byId = new Map(S.messages.map(m => [m.id, m]));
+      j.messages.forEach(m => byId.set(m.id, m));
+      S.messages = [...byId.values()];
+      save(); renderChatMsgs(); renderChatBadge();
+    }
+  } catch(e){ if (/неизвестное действие/.test(e.message)) msgsActionMissing = true; }
+  finally { msgPolling = false; }
+}
+setInterval(pollMessages, 4000);
+
+function renderBadge(){
+  const b = $('syncBadge'), n = S.outbox.length;
+  b.className = '';
+  if (!S.cfg.url){ b.textContent = 'локально'; return; }
+  if (!navigator.onLine){ b.textContent = n ? `оффлайн · ${n}` : 'оффлайн'; return; }
+  if (syncing){ b.textContent = 'обновляю…'; return; }
+  if (S.cfg.lastError){ b.textContent = n ? `ошибка · ${n}` : 'ошибка'; b.classList.add('err'); return; }
+  if (n){ b.textContent = `ждут ${n}`; return; }
+  b.textContent = 'онлайн'; b.classList.add('ok');
+}
+
+// ---------- шаблоны ----------
+function nextAppt(clientId){
+  const now = Date.now();
+  return S.appts.filter(a => a.clientId === clientId && a.status === 'booked' && apptTime(a) >= now - 3600e3)
+    .sort((a,b) => apptTime(a) - apptTime(b))[0] || null;
+}
+function fillTpl(tpl, client, appt){
+  const svc = appt ? (svcById(appt.serviceId)?.name || appt.serviceName || 'процедура') : '';
+  return String(tpl || '')
+    .replace(/\{имя\}/g, client?.name || '').replace(/\{дата\}/g, appt ? fmtDate(appt.date) : '')
+    .replace(/\{время\}/g, appt ? appt.time : '').replace(/\{услуга\}/g, svc)
+    .replace(/\{салон\}/g, S.prefs.businessName || '').replace(/\{адрес\}/g, S.prefs.businessAddress || '')
+    .replace(/\{телефон\}/g, S.prefs.businessPhone || '');
+}
+const inviteLink = c => S.cfg.bot ? `https://t.me/${S.cfg.bot}?start=${c.id}` : '';
+function tgTag(c){
+  if (c.tgStatus === 'linked') return '<span class="tag tg">tg</span>';
+  if (c.tgStatus === 'blocked' || c.tgStatus === 'stopped') return '<span class="tag bad">отписан</span>';
+  return '';
+}
+
+// ---------- чаты: непрочитанные ----------
+const convKey = m => m.clientId || ('chat:' + m.chatId);
+function conversations(){
+  const map = new Map();
+  for (const m of S.messages){
+    if (m.status === 'canceled' || m.tmp) continue;
+    const k = convKey(m); if (!map.has(k)) map.set(k, []);
+    map.get(k).push(m);
+  }
+  const read = S.prefsLocal.read, since = S.prefsLocal.readSince;
+  return [...map.entries()].map(([k, list]) => {
+    list.sort((a,b) => (a.createdAt||'').localeCompare(b.createdAt||''));
+    const last = list[list.length - 1], r = read[k] || since;
+    const unread = list.filter(m => m.direction === 'in' && (m.createdAt || '') > r).length;
+    return {key:k, clientId: last.clientId, name: clientById(last.clientId)?.name || last.clientName || 'Клиент', last, unread};
+  }).sort((a,b) => (b.last.createdAt||'').localeCompare(a.last.createdAt||''));
+}
+function renderChatBadge(){
+  const n = conversations().filter(c => c.unread).length, b = $('chatBadge');
+  b.hidden = !n; b.textContent = n > 9 ? '9+' : n;
+}
+
+// ---------- навигация ----------
+let tab = 'cal', setPath = [];
+const d0 = new Date(); let selDate = today(), calY = d0.getFullYear(), calM = d0.getMonth(), statY = calY, statM = calM;
+let clientQuery = '';
+const view = $('view');
+const TITLES = {cal:'Календарь', clients:'Клиенты', stats:'Статистика', chats:'Чаты'};
+function go(t){ if (setPath.length) closeSettings(); if (t === tab) return; tab = t; render('in'); window.scrollTo({top:0}); }
+function openSettingsPage(page){ setPath.push(page); history.pushState({set: setPath.length}, ''); render('push'); window.scrollTo({top:0}); }
+function closeSettings(){ const n = setPath.length; setPath = []; if (n) history.go(-n); render('pop'); }
+window.addEventListener('popstate', () => {
+  const depth = history.state?.set || 0;
+  if (depth < setPath.length){ setPath = setPath.slice(0, depth); render('pop'); }
+});
+function render(anim){
+  const inSet = setPath.length > 0;
+  const page = inSet ? SETTINGS[setPath[setPath.length - 1]] : null;
+  $('hdr').classList.toggle('sub', inSet);
+  $('title').textContent = inSet ? page.title : TITLES[tab];
+  if (inSet) $('back').title = 'Назад: ' + (setPath.length > 1 ? SETTINGS[setPath[setPath.length - 2]].title : TITLES[tab]);
+  $('dock').classList.toggle('hide', inSet);
+  document.querySelectorAll('nav.tabs .tab').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  renderBadge(); renderChatBadge();
+  if (anim){ view.className = ''; void view.offsetWidth; view.className = anim === true || anim === 'in' ? 'view-in' : 'view-' + anim; }
+  if (inSet) page.render(); else ({cal:renderCal, clients:renderClients, stats:renderStats, chats:renderChats})[tab]();
+}
+$('back').onclick = () => history.back();
+$('gearBtn').onclick = () => openSettingsPage('root');
+
+// ---------- календарь ----------
+function apptsOn(date){ return S.appts.filter(a => a.date === date).sort((a,b) => a.time.localeCompare(b.time)); }
+function renderCal(slide){
+  const first = new Date(calY, calM, 1), offset = (first.getDay() + 6) % 7, days = new Date(calY, calM + 1, 0).getDate();
+  const byDate = {};
+  S.appts.forEach(a => { (byDate[a.date] = byDate[a.date] || []).push(a); });
+  const t = today();
+  let cells = '';
+  for (let i = 0; i < offset; i++) cells += '<button type="button" class="out" tabindex="-1"></button>';
+  for (let d = 1; d <= days; d++){
+    const ds = ymd(new Date(calY, calM, d)), list = (byDate[ds] || []).sort((a,b) => a.time.localeCompare(b.time));
+    const dots = list.slice(0, 3).map(a => `<i style="background:${STATUS[a.status]?.[1] || 'var(--accent)'}"></i>`).join('');
+    cells += `<button type="button" data-d="${ds}" class="${ds===t?'today':''} ${ds===selDate?'sel':''} ${ds<t?'past':''} ${isWorkDay(ds)?'':'off'}" aria-label="${ds}, записей: ${list.length}">${d}<span class="dots">${dots}</span></button>`;
+  }
+  const list = apptsOn(selDate), active = list.filter(a => a.status !== 'canceled');
+  const total = active.reduce((s,a) => s + num(a.price), 0);
+  const dt = parseYMD(selDate), wd = dt.toLocaleDateString('ru-RU', {weekday:'long'});
+  view.innerHTML = `
+    <div class="card cal ${slide ? 'slide-' + slide : ''}" id="cal">
+      <div class="cal-head"><button type="button" id="prevM" aria-label="Предыдущий месяц">‹</button><b>${MONTH_NOM(calM)} ${calY}</b><button type="button" id="nextM" aria-label="Следующий месяц">›</button></div>
+      <div class="dow">${['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map(d => `<span>${d}</span>`).join('')}</div>
+      <div class="grid" id="grid">${cells}</div>
+    </div>
+    <div class="sec" style="margin-bottom:0"><span class="lbl">${selDate === t ? 'сегодня' : selDate === ymd(new Date(Date.now()+864e5)) ? 'завтра' : wd}${isWorkDay(selDate) ? '' : ' · выходной'}</span>${selDate !== t ? '<button class="pillbtn" id="todayBtn">Сегодня</button>' : ''}</div>
+    <div class="daytitle">${esc(fmtDate(selDate))}</div>
+    <div class="rows">${list.length ? list.map(apptItem).join('') : `<div class="empty">Записей нет</div>`}</div>
+    ${active.length ? `<div class="daysum"><span>${active.length} ${plural(active.length, 'запись','записи','записей')}</span><span class="amt">${money(total)}</span></div>` : ''}`;
+  $('prevM').onclick = () => shiftMonth(-1);
+  $('nextM').onclick = () => shiftMonth(1);
+  if ($('todayBtn')) $('todayBtn').onclick = () => { selDate = t; calY = new Date().getFullYear(); calM = new Date().getMonth(); renderCal(); };
+  $('grid').onclick = e => { const b = e.target.closest('button[data-d]'); if (b){ selDate = b.dataset.d; renderCal(); } };
+  const cal = $('cal'); let x0 = null, y0 = null;
+  cal.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive:true});
+  cal.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) shiftMonth(dx < 0 ? 1 : -1);
+  });
+}
+function shiftMonth(d){
+  calM += d; if (calM < 0){ calM = 11; calY--; } if (calM > 11){ calM = 0; calY++; }
+  const t = new Date();
+  selDate = (calY === t.getFullYear() && calM === t.getMonth()) ? today() : ymd(new Date(calY, calM, 1));
+  renderCal(d > 0 ? 'l' : 'r');
+}
+function apptItem(a, withDate){
+  const c = clientById(a.clientId), s = svcById(a.serviceId);
+  const [label, color] = STATUS[a.status] || STATUS.booked;
+  const conf = a.status === 'booked' && CONFIRM[a.confirm];
+  const sub = [s?.name || a.serviceName, a.note].filter(Boolean).join(' · ');
+  return `<div class="item appt" data-appt="${a.id}" style="${a.status==='canceled'?'opacity:.5':''}">
+    <div class="tm">${withDate ? `<span>${fmtShort(a.date)}</span>` : ''}<b>${esc(a.time)}</b>${withDate ? '' : `<span>${fromMin(toMin(a.time) + (num(a.duration) || 60))}</span>`}</div>
+    <div class="vbar" style="background:${color}"></div>
+    <div class="main"><div class="t">${esc(c?.name || a.clientName || 'Клиент')} ${a.source === 'bot' ? '<span class="tag bot">бот</span>' : ''}</div>
+      <div class="s">${esc(sub)}${sub ? ' · ' : ''}${conf ? `<span class="${conf[1]}">${conf[0]}</span>` : `<span style="color:${color}">${label.toLowerCase()}</span>`}</div></div>
+    ${a.price ? `<span class="amt" style="font-size:15px;${a.status==='done'?'':'color:var(--muted)'}">${money(num(a.price))}</span>` : ''}</div>`;
+}
+
+// ---------- клиенты ----------
+function clientItem(c){
+  const visits = S.appts.filter(a => a.clientId === c.id && a.status === 'done').length;
+  const sub = [c.phone, c.tgUsername ? '@' + c.tgUsername : '', visits ? `${visits} ${plural(visits,'визит','визита','визитов')}` : ''].filter(Boolean).join(' · ');
+  return `<div class="item" data-client="${c.id}"><div class="ava round-a">${esc(initials(c.name))}</div>
+    <div class="main"><div class="t">${esc(c.name)}</div>${sub ? `<div class="s">${esc(sub)}</div>` : ''}</div>${tgTag(c)}</div>`;
+}
+function renderClients(){
+  const q = norm(clientQuery.trim());
+  const list = S.clients.filter(c => !q || norm(c.name + ' ' + c.phone + ' @' + (c.tgUsername||'')).includes(q))
+    .sort((a,b) => a.name.localeCompare(b.name, 'ru'));
+  const linked = S.clients.filter(c => c.tgStatus === 'linked').length;
+  view.innerHTML = `<input type="search" class="search" id="cq" placeholder="Поиск: имя, телефон, @telegram" value="${esc(clientQuery)}" autocomplete="off">
+    <div class="sec"><span class="lbl">${S.clients.length} ${plural(S.clients.length,'клиент','клиента','клиентов')}</span><span class="lbl" style="color:var(--muted)">в telegram: ${linked}</span></div>
+    <div class="rows">${list.length ? list.slice(0, 300).map(clientItem).join('') : `<div class="empty">${q ? 'Никого не нашлось' : 'Клиентов пока нет — нажми «+»'}</div>`}</div>
+    ${list.length > 300 ? `<p class="hint">Показаны первые 300. Уточни поиск.</p>` : ''}`;
+  const cq = $('cq');
+  cq.oninput = () => { clientQuery = cq.value; const p = cq.selectionStart; renderClients(); const n = $('cq'); n.focus(); n.setSelectionRange(p,p); };
+}
+
+// ---------- статистика ----------
+function ring(pct){
+  const r = 18, c = 2 * Math.PI * r, v = Math.max(0, Math.min(1, pct));
+  return `<svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="${r}" fill="none" stroke="var(--surface3)" stroke-width="6"/>
+    <circle cx="24" cy="24" r="${r}" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c * v} ${c}" transform="rotate(-90 24 24)"/></svg>`;
+}
+function renderStats(){
+  const now = Date.now(), first = new Date(statY, statM, 1), days = new Date(statY, statM + 1, 0).getDate();
+  const inMonth = S.appts.filter(a => { const d = parseYMD(a.date); return d.getFullYear() === statY && d.getMonth() === statM; });
+  const done = inMonth.filter(a => a.status === 'done');
+  const upcoming = inMonth.filter(a => a.status === 'booked' && apptTime(a) >= now);
+  const unmarked = S.appts.filter(a => a.status === 'booked' && apptTime(a) + (num(a.duration) || 60) * 6e4 < now);
+  const earned = done.reduce((s,a) => s + num(a.price), 0), expected = upcoming.reduce((s,a) => s + num(a.price), 0);
+  const canceled = inMonth.filter(a => a.status === 'canceled').length, noshow = inMonth.filter(a => a.status === 'noshow').length;
+  const avg = done.length ? earned / done.length : 0;
+  const pct = earned + expected ? earned / (earned + expected) : 0;
+  const perDay = Array.from({length: days}, () => [0, 0]);
+  done.forEach(a => perDay[parseYMD(a.date).getDate() - 1][0] += num(a.price));
+  upcoming.forEach(a => perDay[parseYMD(a.date).getDate() - 1][1] += num(a.price));
+  const max = Math.max(1, ...perDay.map(([x,y]) => x + y));
+  const t = new Date(), isCur = t.getFullYear() === statY && t.getMonth() === statM;
+  const bySvc = {};
+  done.forEach(a => { const n = svcById(a.serviceId)?.name || a.serviceName || 'Без услуги'; (bySvc[n] = bySvc[n] || [0, 0]); bySvc[n][0] += num(a.price); bySvc[n][1]++; });
+  const svcRows = Object.entries(bySvc).sort((a,b) => b[1][0] - a[1][0]);
+  const allUpcoming = S.appts.filter(a => a.status === 'booked' && apptTime(a) >= now).sort((a,b) => apptTime(a) - apptTime(b));
+  const allUpSum = allUpcoming.reduce((s,a) => s + num(a.price), 0);
+  view.innerHTML = `
+    <div class="month-switch"><button class="round" id="sPrev" aria-label="Предыдущий месяц">‹</button><b>${MONTH_NOM(statM)} ${statY}</b><button class="round" id="sNext" aria-label="Следующий месяц">›</button></div>
+    <div class="card money-card">
+      <div class="ring">${Math.round(pct * 100)}%${ring(pct)}</div>
+      <div class="lbl">Заработано</div>
+      <div class="big">${money(earned)}</div>
+      <span class="chip">${done.length} ${plural(done.length,'визит','визита','визитов')}</span>
+    </div>
+    <div class="card money-card alt">
+      <div class="lbl">Ожидается${isCur ? ' до конца месяца' : ''}</div>
+      <div class="big">${money(expected)}</div>
+      <span class="chip">${upcoming.length} ${plural(upcoming.length,'запись','записи','записей')}</span>
+    </div>
+    ${unmarked.length ? `<button class="notice" id="unmarked"><span class="lbl" style="flex:1;white-space:nowrap">Не отмечено · ${unmarked.length}</span><span class="hint" style="margin:0;white-space:nowrap">завершить или отметить ›</span></button>` : ''}
+    <div class="tiles">
+      <div class="tile"><span class="lbl">Ср. чек</span><b>${money(avg)}</b></div>
+      <div class="tile"><span class="lbl">Отмены</span><b>${canceled}</b></div>
+      <div class="tile"><span class="lbl">Не пришли</span><b>${noshow}</b></div>
+    </div>
+    <div class="card"><div class="lbl" style="margin-bottom:14px">По дням</div>
+      <div class="chart">${perDay.map(([x,y], i) => `<i class="${isCur && i + 1 === t.getDate() ? 'today' : ''}" title="${i+1}: ${money(x)}${y ? ' + ' + money(y) : ''}">
+        ${x ? `<b style="height:${x/max*100}%"></b>` : ''}${y ? `<b class="exp" style="height:${y/max*100}%"></b>` : ''}</i>`).join('')}</div>
+      <div class="chart-x"><span>1</span><span>${Math.ceil(days/2)}</span><span>${days}</span></div>
+      <p class="hint" style="margin:10px 0 0">Заливка — заработано, контур — ожидается.</p></div>
+    ${svcRows.length ? `<div class="sec"><span class="lbl">По услугам</span></div><div class="group">${svcRows.map(([n,[s,c]]) =>
+      `<div class="row static"><span class="rl">${esc(n)}<br><span class="hint" style="margin:0">${c} ${plural(c,'визит','визита','визитов')}</span></span><span class="amt" style="font-size:15px">${money(s)}</span></div>`).join('')}</div>` : ''}
+    <div class="sec"><span class="lbl">Все предстоящие</span><span class="amt" style="font-size:15px">${money(allUpSum)}</span></div>
+    <div class="rows">${allUpcoming.length ? allUpcoming.slice(0, 8).map(a => apptItem(a, true)).join('') : '<div class="empty">Предстоящих записей нет</div>'}</div>
+    ${allUpcoming.length > 8 ? `<p class="hint">и ещё ${allUpcoming.length - 8} — смотри в календаре</p>` : ''}`;
+  $('sPrev').onclick = () => { statM--; if (statM < 0){ statM = 11; statY--; } renderStats(); };
+  $('sNext').onclick = () => { statM++; if (statM > 11){ statM = 0; statY++; } renderStats(); };
+  if ($('unmarked')) $('unmarked').onclick = () => openApptList('Не отмечено', unmarked.sort((a,b) => apptTime(a) - apptTime(b)), 'Открой запись и нажми «Завершить» или поставь «Не пришёл», чтобы статистика была точной.');
+}
+function openApptList(title, list, hint){
+  openSheet(`<h3>${esc(title)}</h3>${hint ? `<p class="hint" style="margin-top:0">${esc(hint)}</p>` : ''}
+    <div class="rows">${list.map(a => apptItem(a, true)).join('') || '<div class="empty">Пусто</div>'}</div>
+    <div class="btns"><button type="button" class="btn" id="lClose">Закрыть</button></div>`, () => {
+    $('lClose').onclick = closeAll;
+    form.querySelectorAll('[data-appt]').forEach(el => el.onclick = () => { sheetStack.push(() => openApptList(title, list.map(x => S.appts.find(a => a.id === x.id) || x).filter(a => a.status === 'booked' || title !== 'Не отмечено'), hint)); openApptForm(S.appts.find(a => a.id === el.dataset.appt)); });
+  });
+}
+
+// ---------- чаты ----------
+function renderChats(){
+  const convs = conversations();
+  const sched = S.messages.filter(m => m.status === 'scheduled').length;
+  const ready = !!S.cfg.url && !!S.cfg.bot;
+  view.innerHTML = `
+    ${!ready ? `<div class="card"><div class="lbl">Telegram не подключён</div><p class="hint" style="margin:10px 0 0">Открой ⚙︎ → Сервер и подключись. Потом клиенты смогут подписаться на бота и писать тебе сюда.</p></div>` : ''}
+    <div style="display:flex;gap:8px;margin:4px 0 6px;flex-wrap:wrap">
+      <button class="pillbtn big" id="bcast">✦ Рассылка</button>
+      ${sched ? `<button class="pillbtn big" id="schedList">⏰ Запланировано · ${sched}</button>` : ''}
+    </div>
+    <div class="rows" style="margin-top:12px">${convs.length ? convs.map(c => {
+      const m = c.last, who = m.direction === 'in' ? '' : (m.status === 'scheduled' ? '⏰ ' : 'Вы: ');
+      return `<div class="item" data-conv="${esc(c.key)}"><div class="ava round-a">${esc(initials(c.name))}</div>
+        <div class="main"><div class="t">${esc(c.name)}</div><div class="s">${esc(who + (m.text || '').replace(/\s+/g,' '))}</div></div>
+        <div style="text-align:right;flex:none"><div class="hint" style="margin:0 0 4px">${fmtWhen(m.createdAt)}</div>${c.unread ? `<span class="tag" style="background:var(--accent);color:var(--accent-ink)">${c.unread}</span>` : ''}</div></div>`;
+    }).join('') : '<div class="empty">Сообщений пока нет</div>'}</div>`;
+  $('bcast').onclick = () => openBroadcast();
+  if ($('schedList')) $('schedList').onclick = openScheduledList;
+  view.querySelectorAll('[data-conv]').forEach(el => el.onclick = () => {
+    const k = el.dataset.conv, c = k.startsWith('chat:') ? null : clientById(k);
+    if (c) openChat(c); else toast('Клиент удалён из базы');
+  });
+}
+let chatOpen = null;
+function openChat(c, appt){
+  if (!c) return;
+  openSheet(`
+    <div class="chat-head">
+      <div class="who"><div class="ava round-a" style="width:44px;height:44px;font-size:14px">${esc(initials(c.name))}</div>
+        <div style="flex:1;min-width:0"><h3>${esc(c.name)}</h3><div class="hint" style="margin:2px 0 0">${c.tgUsername ? '@' + esc(c.tgUsername) + ' · ' : ''}${c.tgStatus === 'linked' ? 'подписан на бота' : 'не подписан на бота'}</div></div>
+        <button type="button" class="pillbtn" id="chCard">Карточка</button></div>
+      <div id="chAppt"></div>
+    </div>
+    <div class="chat-msgs" id="chatMsgs"></div>
+    <div class="sched-row" id="schedRow" hidden><span class="lbl" style="flex:none">Отправить</span><input type="datetime-local" id="schedAt"></div>
+    <div class="composer">${c.tgStatus === 'linked'
+      ? `<button type="button" class="round" id="chSched" aria-label="Запланировать">⏰</button>
+         <textarea id="chText" rows="1" placeholder="Сообщение"></textarea>
+         <button type="submit" class="round send" aria-label="Отправить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>`
+      : `<div style="flex:1"><p class="hint" style="margin:4px 4px 10px">Клиент ещё не подписан на бота — написать ему отсюда нельзя.</p>
+         ${inviteLink(c) ? '<button type="button" class="btn tg" id="chInvite" style="width:100%">Пригласить в Telegram</button>' : ''}</div>`}</div>`, () => {
+    chatOpen = {clientId: c.id, apptId: appt?.id || '', unreadFrom: S.prefsLocal.read[c.id] || S.prefsLocal.readSince};   // после openSheet: он сбрасывает признак чата
+    msgsSince = S.cfg.lastSync || ''; setTimeout(pollMessages, 300);
+    sheet.classList.add('chat-mode');
+    renderChatMsgs(true);
+    $('chCard').onclick = () => { sheetStack.push(() => openChat(clientById(c.id), appt)); openClientCard(clientById(c.id)); };
+    if ($('chInvite')) $('chInvite').onclick = () => invite(c);
+    const ta = $('chText');
+    if (ta){
+      ta.oninput = () => { ta.style.height = '48px'; ta.style.height = Math.min(140, ta.scrollHeight) + 'px'; };
+      $('chSched').onclick = () => {
+        const row = $('schedRow'); row.hidden = !row.hidden; $('chSched').classList.toggle('on', !row.hidden);
+        if (!row.hidden && !$('schedAt').value) $('schedAt').value = toLocalInput(Date.now() + 3600e3);
+      };
+      form.onsubmit = e => {
+        e.preventDefault();
+        const text = fillTpl(ta.value, c, nextAppt(c.id)).trim(); if (!text) return;
+        let at = '';
+        if (!$('schedRow').hidden && $('schedAt').value){ const ms = new Date($('schedAt').value).getTime(); if (ms > Date.now() + 30e3) at = new Date(ms).toISOString(); }
+        ta.value = ''; ta.oninput();
+        if (at){ $('schedRow').hidden = true; $('chSched').classList.remove('on'); }
+        sendChatMessage(c, {clientId:c.id, kind:'manual', text, scheduledAt: at, apptId: at ? (appt?.id || '') : ''});
+      };
+      // iPhone: первое касание кнопки не должно уходить на скрытие клавиатуры (из-за этого кнопка «уезжала» и нажатие терялось)
+      const sendBtn = form.querySelector('.composer .send');
+      sendBtn.addEventListener('pointerdown', e => e.preventDefault());
+      sendBtn.addEventListener('touchend', e => { e.preventDefault(); form.requestSubmit(); });
+      ta.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && matchMedia('(hover:hover)').matches){ e.preventDefault(); form.requestSubmit(); } });
+    }
+  });
+}
+// показать сообщение сразу, а отправить в фоне
+async function sendChatMessage(c, item){
+  const tmp = {id:'tmp-' + uid(), tmp:true, clientId:c.id, clientName:c.name, direction:'out', kind:item.kind, text:item.text,
+    status: item.scheduledAt ? 'scheduled' : 'sending', scheduledAt:item.scheduledAt || '', createdAt:nowISO(), item};
+  S.messages.push(tmp); renderChatMsgs(true);
+  const r = await sendMessages([item], true);
+  const i = S.messages.findIndex(m => m.id === tmp.id);
+  if (r){ if (i >= 0) S.messages.splice(i, 1); if (item.scheduledAt) toast('Запланировано на ' + fmtWhen(item.scheduledAt)); }
+  else if (i >= 0){ S.messages[i] = {...S.messages[i], status:'failed'}; }
+  save(); if (chatOpen) renderChatMsgs(true);
+}
+function renderChatMsgs(scrollEnd){
+  if (!chatOpen) return;
+  const c = clientById(chatOpen.clientId), box = $('chatMsgs'); if (!c || !box) return;
+  const atBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 40;
+  const real = S.messages.filter(m => !m.tmp && m.clientId === c.id && m.direction === 'out');
+  const arrived = t => real.some(m => m.text === t.text && Math.abs(new Date(m.createdAt) - new Date(t.createdAt)) < 120e3);
+  const list = S.messages.filter(m => m.clientId === c.id && m.status !== 'canceled' && !(m.tmp && m.status !== 'failed' && arrived(m)))
+    .sort((a,b) => (a.status === 'scheduled') - (b.status === 'scheduled') || (a.status === 'scheduled' ? (a.scheduledAt||'').localeCompare(b.scheduledAt||'') : (a.createdAt||'').localeCompare(b.createdAt||'')));
+  const firstUnread = list.find(m => m.direction === 'in' && (m.createdAt || '') > chatOpen.unreadFrom);
+  let html = '', day = '';
+  for (const m of list){
+    if (m === firstUnread) html += '<div class="chat-new" id="newMark">новые сообщения</div>';
+    const d = (m.status === 'scheduled' ? m.scheduledAt : m.createdAt) || '';
+    const dd = d ? ymd(new Date(d)) : '';
+    if (dd && dd !== day){ day = dd; html += `<div class="chat-day">${dd === today() ? 'сегодня' : fmtDate(dd)}</div>`; }
+    if (m.kind === 'booking'){ html += `<div class="bub sys">${esc(m.text)}</div>`; continue; }
+    const kind = {broadcast:'рассылка', reminder:'напоминание', confirmreq:'запрос «+»', welcome:'приветствие', autoreply:'автоответ', confirm:'подтверждение'}[m.kind] || '';
+    const st = m.direction === 'in' ? '' : m.status === 'sending' ? '⏳' : m.status === 'failed' ? `<span class="neg">не отправлено</span> <button type="button" data-retry="${m.id}" style="color:var(--accent)">повторить</button>` :
+      m.status === 'scheduled' ? (m.tmp ? `⏰ ${fmtWhen(m.scheduledAt)}` : `⏰ ${fmtWhen(m.scheduledAt)} <button type="button" data-cancel="${m.id}">отменить</button>`) : m.status === 'error' ? `<span class="neg">⚠ ${esc(m.error)}</span>` : m.status === 'queued' ? '⏳' : '✓';
+    html += `<div class="bub ${m.direction === 'in' ? 'in' : 'out'} ${m.status === 'scheduled' ? 'sched' : ''}">${esc(m.text)}<span class="meta">${kind ? kind + ' · ' : ''}${m.status === 'scheduled' ? '' : new Date(m.createdAt).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})} ${st}</span></div>`;
+  }
+  box.innerHTML = html || '<div class="empty" style="margin:auto">Переписки пока нет</div>';
+  box.querySelectorAll('[data-cancel]').forEach(b => b.onclick = () => { if (confirm('Отменить запланированное сообщение?')) cancelScheduled(b.dataset.cancel); });
+  box.querySelectorAll('[data-retry]').forEach(b => b.onclick = () => {
+    const m = S.messages.find(x => x.id === b.dataset.retry); if (!m) return;
+    S.messages = S.messages.filter(x => x !== m); sendChatMessage(c, m.item);
+  });
+  // прокрутка: к первому непрочитанному, иначе в самый конец; ждём, пока окно появится на экране
+  const scroll = () => { const mark = $('newMark'); if (mark && scrollEnd) box.scrollTop = Math.max(0, mark.offsetTop - box.offsetTop - 12); else box.scrollTop = box.scrollHeight; };
+  if (scrollEnd || atBottom){ scroll(); requestAnimationFrame(() => requestAnimationFrame(scroll)); setTimeout(scroll, 420); }
+  // ближайшая запись и запрос подтверждения
+  const a = (chatOpen.apptId && S.appts.find(x => x.id === chatOpen.apptId)) || nextAppt(c.id), slot = $('chAppt');
+  if (slot){
+    if (a){
+      const conf = a.status === 'booked' && CONFIRM[a.confirm];
+      slot.innerHTML = `<div class="chat-appt"><span><b>${fmtShort(a.date)}, ${esc(a.time)}</b> · ${esc(svcById(a.serviceId)?.name || a.serviceName || 'запись')}${conf ? ` · <span class="${conf[1]}">${conf[0]}</span>` : ''}</span>
+        ${c.tgStatus === 'linked' && a.status === 'booked' && a.confirm !== 'yes' ? '<button type="button" class="pillbtn" id="chAsk">Запросить «+»</button>' : ''}</div>`;
+      if ($('chAsk')) $('chAsk').onclick = () => { sheetStack.push(() => openChat(clientById(c.id), a)); openConfirmRequest(a); };
+    } else slot.innerHTML = '';
+  }
+  // прочитано
+  S.prefsLocal.read[c.id] = nowISO(); save(); renderChatBadge();
+}
+function openBroadcast(){
+  const linked = S.clients.filter(c => c.tgStatus === 'linked').sort((a,b) => a.name.localeCompare(b.name, 'ru'));
+  let mode = 'all', picked = new Set(), q = '', when = 'now';
+  openSheet(`
+    <h3>Рассылка</h3>
+    <div class="seg" id="bMode"><button type="button" data-k="all">Всем (${linked.length})</button><button type="button" data-k="pick">Выбрать</button></div>
+    <div id="bPick" hidden><input type="search" id="bQ" placeholder="Найти клиента" style="margin-top:10px" autocomplete="off"><div class="group" id="bList" style="margin-top:8px;max-height:260px;overflow:auto;box-shadow:none;background:var(--surface2)"></div></div>
+    <label for="bText">Сообщение</label>
+    <textarea id="bText" placeholder="Например: {имя}, в декабре скидка 15% на все услуги!"></textarea>
+    <div class="chips" id="bVars">${VARS.map(v => `<button type="button">${v}</button>`).join('')}</div>
+    <p class="hint">{дата}, {время} и {услуга} — из ближайшей записи клиента.</p>
+    <div id="bPrev"></div>
+    <label>Когда</label>
+    <div class="seg" id="bWhen"><button type="button" data-k="now">Сейчас</button><button type="button" data-k="later">Запланировать</button></div>
+    <input type="datetime-local" id="bAt" hidden style="margin-top:10px">
+    <div class="btns"><button type="button" class="btn" id="bCancel">Отмена</button><button type="submit" class="btn primary" id="bSend">Отправить</button></div>`, () => {
+    const ta = $('bText');
+    const recipients = () => mode === 'all' ? linked : linked.filter(c => picked.has(c.id));
+    const upd = () => {
+      const r = recipients(), s = r[0] || linked[0];
+      $('bPrev').innerHTML = s && ta.value.trim() ? `<label>Как увидит ${esc(s.name)}</label><div class="preview">${esc(fillTpl(ta.value, s, nextAppt(s.id)))}</div>` : '';
+      $('bSend').textContent = (when === 'later' ? 'Запланировать · ' : 'Отправить · ') + r.length;
+      $('bSend').disabled = !r.length || !ta.value.trim() || !S.cfg.bot;
+    };
+    const drawList = () => {
+      const qq = norm(q);
+      $('bList').innerHTML = linked.filter(c => !qq || norm(c.name + ' ' + c.phone).includes(qq)).slice(0, 500).map(c =>
+        `<label class="check"><input type="checkbox" data-pick="${c.id}" ${picked.has(c.id)?'checked':''}><span style="flex:1">${esc(c.name)}</span></label>`).join('') || '<div class="empty">Нет подписчиков</div>';
+      $('bList').querySelectorAll('[data-pick]').forEach(cb => cb.onchange = () => { cb.checked ? picked.add(cb.dataset.pick) : picked.delete(cb.dataset.pick); upd(); });
+    };
+    segment($('bMode'), mode, k => { mode = k; $('bPick').hidden = k !== 'pick'; if (k === 'pick') drawList(); upd(); });
+    segment($('bWhen'), when, k => { when = k; $('bAt').hidden = k !== 'later'; if (k === 'later' && !$('bAt').value) $('bAt').value = toLocalInput(Date.now() + 3600e3); upd(); });
+    $('bQ').oninput = e => { q = e.target.value; drawList(); };
+    ta.oninput = upd;
+    $('bVars').onclick = e => { if (e.target.tagName !== 'BUTTON') return; const v = e.target.textContent, p = ta.selectionStart ?? ta.value.length;
+      ta.value = ta.value.slice(0,p) + v + ta.value.slice(ta.selectionEnd ?? p); ta.focus(); ta.setSelectionRange(p + v.length, p + v.length); upd(); };
+    $('bCancel').onclick = closeAll;
+    upd();
+    form.onsubmit = async e => {
+      e.preventDefault();
+      const r = recipients(); if (!r.length || !ta.value.trim()) return;
+      let at = '';
+      if (when === 'later'){ const ms = new Date($('bAt').value).getTime(); if (!(ms > Date.now())) return toast('Выбери время в будущем'); at = new Date(ms).toISOString(); }
+      if (!confirm(`${at ? 'Запланировать на ' + fmtWhen(at) : 'Отправить сейчас'}: ${r.length} ${plural(r.length,'клиенту','клиентам','клиентам')}?`)) return;
+      $('bSend').disabled = true; $('bSend').textContent = 'Отправляю…';
+      const res = await sendMessages(r.map(c => ({clientId:c.id, kind:'broadcast', text: fillTpl(ta.value, c, nextAppt(c.id)), scheduledAt: at})));
+      if (res) closeAll(); else upd();
+    };
+  });
+}
+function openScheduledList(){
+  const list = S.messages.filter(m => m.status === 'scheduled').sort((a,b) => (a.scheduledAt||'').localeCompare(b.scheduledAt||''));
+  openSheet(`<h3>Запланировано</h3>
+    <div class="rows">${list.map(m => `<div class="item" style="cursor:default;align-items:flex-start"><div class="main"><div class="t">${esc(clientById(m.clientId)?.name || m.clientName)} · <span class="lbl">${fmtWhen(m.scheduledAt)}</span></div>
+      <div class="s" style="white-space:normal">${esc(m.text)}</div></div><button type="button" class="pillbtn" data-cancel="${m.id}" style="color:var(--red)">Отменить</button></div>`).join('') || '<div class="empty">Ничего не запланировано</div>'}</div>
+    <div class="btns"><button type="button" class="btn" id="slClose">Закрыть</button></div>`, () => {
+    $('slClose').onclick = closeAll;
+    form.querySelectorAll('[data-cancel]').forEach(b => b.onclick = async () => { await cancelScheduled(b.dataset.cancel); openScheduledList(); });
+  });
+}
+function openConfirmRequest(a){
+  const c = clientById(a.clientId); if (!c) return;
+  const t = apptTime(a), opts = [['now','Сейчас'], ['24','За 24 ч'], ['3','За 3 ч'], ['custom','Время…']];
+  let when = t - 24*3600e3 > Date.now() + 60e3 ? '24' : 'now';
+  openSheet(`
+    <h3>Запросить подтверждение</h3>
+    <p class="hint" style="margin-top:0">${esc(c.name)} · ${fmtDate(a.date)} в ${esc(a.time)}. Клиент ответит «+» или «−» прямо в Telegram, и отметка появится у записи.</p>
+    <label for="crText">Текст</label><textarea id="crText">${esc(fillTpl(S.prefs.confirmReqText, c, a))}</textarea>
+    <label>Когда отправить</label>
+    <div class="seg" id="crWhen">${opts.map(([k,l]) => `<button type="button" data-k="${k}">${l}</button>`).join('')}</div>
+    <input type="datetime-local" id="crAt" hidden style="margin-top:10px">
+    <p class="hint" id="crHint"></p>
+    <div class="btns"><button type="button" class="btn" id="crBack">Назад</button><button type="submit" class="btn primary" id="crSend">Отправить</button></div>`, () => {
+    const calc = () => when === 'now' ? 0 : when === 'custom' ? new Date($('crAt').value).getTime() : t - Number(when) * 3600e3;
+    const upd = () => {
+      const ms = calc(), later = ms > Date.now() + 30e3;
+      $('crHint').textContent = later ? 'Сообщение уйдёт ' + fmtWhen(new Date(ms).toISOString()) + '.' : (when === 'now' ? '' : 'Это время уже прошло — отправлю сразу.');
+      $('crSend').textContent = later ? 'Запланировать' : 'Отправить сейчас';
+    };
+    segment($('crWhen'), when, k => { when = k; $('crAt').hidden = k !== 'custom'; if (k === 'custom' && !$('crAt').value) $('crAt').value = toLocalInput(Math.max(Date.now() + 3600e3, t - 12*3600e3)); upd(); });
+    $('crAt').onchange = upd; upd();
+    $('crBack').onclick = closeSheet;
+    form.onsubmit = async e => {
+      e.preventDefault();
+      const text = $('crText').value.trim(); if (!text) return;
+      const ms = calc(), at = ms > Date.now() + 30e3 ? new Date(ms).toISOString() : '';
+      $('crSend').disabled = true;
+      const r = await sendMessages([{clientId:c.id, apptId:a.id, kind:'confirmreq', text, scheduledAt: at}]);
+      if (r) closeSheet(); else $('crSend').disabled = false;
+    };
+  });
+}
+
+// ---------- настройки ----------
+const IC = {
+  paint:'<path d="M12 3a9 9 0 1 0 0 18c1 0 1.5-.8 1.5-1.6 0-.9-.6-1.3-.6-2.1 0-.9.7-1.6 1.6-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11" r="1.2"/><circle cx="10.5" cy="7" r="1.2"/><circle cx="15" cy="7.5" r="1.2"/>',
+  shop:'<path d="M4 10v10h16V10M3 6l2-3h14l2 3v1.5a2.5 2.5 0 0 1-4.5 1.5 2.5 2.5 0 0 1-4.5 0 2.5 2.5 0 0 1-4.5 0A2.5 2.5 0 0 1 3 7.5zM10 20v-5h4v5"/>',
+  scissors:'<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  send:'<path d="M21.5 3.5L2.8 10.6c-.8.3-.8 1.4 0 1.7l4.7 1.7 1.8 5.6c.2.8 1.2 1 1.8.4l2.6-2.5 4.8 3.5c.7.5 1.6.1 1.8-.7L22.9 4.8c.2-.9-.6-1.6-1.4-1.3z"/>',
+  cloud:'<path d="M17.5 19a4.5 4.5 0 0 0 .5-9 6 6 0 0 0-11.6 1.5A3.75 3.75 0 0 0 7 19z"/>',
+  db:'<ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+  bug:'<rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 11v9M7 13H3M21 13h-4M7 17l-3 2M17 17l3 2M8 8L5 5M16 8l3-3M9.5 7a2.5 2.5 0 0 1 5 0"/>',
+};
+const icon = name => `<span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IC[name]}</svg></span>`;
+const group = (title, rows, foot) => `${title ? `<div class="gtitle lbl">${title}</div>` : '<div style="height:16px"></div>'}<div class="group">${rows}</div>${foot ? `<div class="gfoot">${foot}</div>` : ''}`;
+const navRow = (page, label, value, ic) => `<button type="button" class="row" data-page="${page}">${ic || ''}<span class="rl">${label}</span><span class="rv">${value ?? ''}</span><span class="chev">›</span></button>`;
+const actRow = (id, label, cls) => `<button type="button" class="row ${cls || 'action'}" id="${id}"><span class="rl">${label}</span></button>`;
+const infoRow = (label, value) => `<div class="row static"><span class="rl">${label}</span><span class="rv" style="max-width:65%">${value}</span></div>`;
+const inputRow = (id, label, value, attrs) => `<label class="row static" style="margin:0;font:16px var(--f-body);text-transform:none;letter-spacing:0;color:var(--text)"><span class="rl" style="flex:none">${label}</span><input id="${id}" value="${esc(value)}" ${attrs || ''}></label>`;
+const switchRow = (id, label, on) => `<label class="row static" style="margin:0;font:16px var(--f-body);text-transform:none;letter-spacing:0;color:var(--text)"><span class="rl">${label}</span><span class="sw"><input type="checkbox" id="${id}" ${on ? 'checked' : ''}><span></span></span></label>`;
+const selectRow = (id, label, options, value) => `<label class="row static" style="margin:0;font:16px var(--f-body);text-transform:none;letter-spacing:0;color:var(--text)"><span class="rl">${label}</span><select id="${id}" style="flex:none;width:auto">${options.map(([v,l]) => `<option value="${v}" ${String(v)===String(value)?'selected':''}>${l}</option>`).join('')}</select></label>`;
+const textRow = (id, value, ph) => `<div class="tarea"><textarea id="${id}" placeholder="${esc(ph || '')}">${esc(value)}</textarea></div>`;
+function bindNav(){ view.querySelectorAll('[data-page]').forEach(b => b.onclick = () => openSettingsPage(b.dataset.page)); }
+function bindPref(id, key, fallback){ const el = $(id); el.onchange = () => setPref(key, el.value.trim() || (fallback ?? '')); }
+function bindSwitch(id, key){ const el = $(id); el.onchange = () => setPref(key, el.checked ? '1' : '0'); }
+const varsFoot = 'Подстановки: ' + VARS.join(' ');
+const halfHours = Array.from({length:48}, (_, i) => { const t = fromMin(i * 30); return [t, t]; });
+
+const SETTINGS = {
+  root: { title:'Настройки', render(){
+    const themeName = {auto:'Авто', light:'Светлая', dark:'Тёмная'}[S.prefsLocal.theme];
+    const conn = !S.cfg.url ? 'Не подключён' : S.cfg.lastError ? 'Ошибка' : 'Подключён';
+    view.innerHTML =
+      group('', navRow('appearance', 'Оформление', themeName, icon('paint')) + navRow('salon', 'Салон', esc(S.prefs.businessName) || 'Не указан', icon('shop'))) +
+      group('', navRow('services', 'Услуги', S.services.length || 'Нет', icon('scissors')) + navRow('booking', 'Онлайн-запись', S.prefs.botBooking === '1' ? 'Вкл' : 'Выкл', icon('clock')) +
+        navRow('telegram', 'Telegram-бот', S.cfg.bot ? '@' + esc(S.cfg.bot) : 'Нет', icon('send'))) +
+      group('', navRow('server', 'Сервер', conn, icon('cloud')) + navRow('database', 'База данных', '', icon('db')) + navRow('debug', 'Отладка', S.outbox.length ? `ждут ${S.outbox.length}` : '', icon('bug')),
+        `Записи · версия ${APP_VERSION}`);
+    bindNav();
+  }},
+  appearance: { title:'Оформление', render(){
+    const t = S.prefsLocal.theme;
+    view.innerHTML = group('Тема', [['auto','Автоматически'],['dark','Тёмная'],['light','Светлая']].map(([k,l]) =>
+      `<button type="button" class="row" data-theme-k="${k}"><span class="rl">${l}</span>${t === k ? '<span class="check-mark">✓</span>' : ''}</button>`).join(''),
+      '«Автоматически» следует за настройкой телефона. Тема хранится только на этом устройстве.');
+    view.querySelectorAll('[data-theme-k]').forEach(b => b.onclick = () => setTheme(b.dataset.themeK));
+  }},
+  salon: { title:'Салон', render(){
+    const p = S.prefs;
+    view.innerHTML = group('', inputRow('pName', 'Название', p.businessName, 'placeholder="Студия «Лён»"') +
+        inputRow('pAddr', 'Адрес', p.businessAddress, 'placeholder="ул. Ленина, 1"') +
+        inputRow('pPhone', 'Телефон', p.businessPhone, 'type="tel" inputmode="tel" placeholder="+7 900 000-00-00"'),
+      'Подставляются в сообщения вместо {салон}, {адрес} и {телефон}.');
+    bindPref('pName', 'businessName'); bindPref('pAddr', 'businessAddress'); bindPref('pPhone', 'businessPhone');
+  }},
+  services: { title:'Услуги', render(){
+    const list = S.services.slice().sort((a,b) => a.name.localeCompare(b.name,'ru'));
+    view.innerHTML = group('', list.map(s => `<button type="button" class="row" data-svc="${s.id}"><span class="rl">${esc(s.name)}</span>
+        <span class="rv">${num(s.duration)} мин${s.price ? ' · ' + money(num(s.price)) : ''}</span><span class="chev">›</span></button>`).join('') +
+        actRow('addSvc', '+ Добавить услугу'),
+      'При записи длительность и цена подставляются из услуги. Эти же услуги клиенты видят при записи через бота.');
+    view.querySelectorAll('[data-svc]').forEach(b => b.onclick = () => openServiceForm(svcById(b.dataset.svc)));
+    $('addSvc').onclick = () => openServiceForm();
+  }},
+  booking: { title:'Онлайн-запись', render(){
+    const p = S.prefs, days = String(p.workDays).split(',').filter(Boolean), cyc = p.scheduleMode === 'cycle', fixed = p.slotMode === 'fixed';
+    const next = []; for (let i = 0; next.length < 8 && i < 40; i++){ const ds = ymd(new Date(Date.now() + i * 864e5)); if (isWorkDay(ds)) next.push(ds); }
+    view.innerHTML =
+      group('', switchRow('bOn', 'Запись через бота', p.botBooking === '1'),
+        `Клиент нажимает «📅 Записаться» в боте, выбирает день и свободное время. Запись сразу появится в календаре, а в «Чатах» — уведомление. Ты из приложения можешь записывать, переносить и отменять на любое время.${S.cfg.bot ? ` Бот: <a href="https://t.me/${esc(S.cfg.bot)}" target="_blank" rel="noopener" style="color:var(--accent)">t.me/${esc(S.cfg.bot)}</a>` : ''}`) +
+      `<div class="gtitle lbl">График</div><div class="seg" id="bMode" style="margin:0 2px"><button type="button" data-k="cycle">Смена</button><button type="button" data-k="week">Дни недели</button></div>` +
+      (cyc
+        ? `<div style="height:10px"></div>` + group('', selectRow('bWork', 'Рабочих дней', [1,2,3,4,5,6,7].map(n => [n, n]), p.cycleWork) +
+            selectRow('bOff', 'Выходных', [0,1,2,3,4].map(n => [n, n]), p.cycleOff) +
+            inputRow('bCStart', 'Первый рабочий день', p.cycleStart, 'type="date"'),
+            `График ${p.cycleWork}/${p.cycleOff}. Ближайшие рабочие дни: ${next.map(fmtShort).join(', ')}.`)
+        : `<div class="group" style="margin-top:10px"><div class="daychips" id="bDays">${['Пн','Вт','Ср','Чт','Пт','Сб','Вс'].map((d,i) => `<button type="button" data-d="${i+1}" class="${days.includes(String(i+1))?'on':''}">${d}</button>`).join('')}</div></div>`) +
+      `<div class="gtitle lbl">Время записи в боте</div><div class="seg" id="bSlot" style="margin:0 2px"><button type="button" data-k="fixed">Точные часы</button><button type="button" data-k="step">С шагом</button></div><div style="height:10px"></div>` +
+      (fixed
+        ? group('', inputRow('bFixed', 'Часы', fixedTimes().join(', '), 'placeholder="11:00, 16:00" inputmode="numbers"'), 'Через запятую. Клиент увидит только эти часы, и только если они свободны.')
+        : group('', selectRow('bStart', 'Начало', halfHours, p.workStart) + selectRow('bEnd', 'Конец', halfHours, p.workEnd) +
+            selectRow('bStep', 'Шаг', [[10,'10 мин'],[15,'15 мин'],[20,'20 мин'],[30,'30 мин'],[60,'1 час']], p.slotStep), 'Бот предложит все свободные окна в этих часах.')) +
+      group('Ограничения', selectRow('bDaysAhead', 'Запись вперёд на', [[7,'7 дней'],[14,'14 дней'],[21,'21 день'],[30,'30 дней'],[60,'60 дней']], p.bookDays) +
+        selectRow('bNotice', 'Не позже чем за', [[0,'без ограничений'],[1,'1 час'],[2,'2 часа'],[3,'3 часа'],[6,'6 часов'],[12,'12 часов'],[24,'сутки']], p.bookNotice),
+        'Запись открыта начиная с сегодняшнего дня. Занятые окна бот не показывает.') +
+      group('Сообщение после записи', textRow('bText', p.bookedText), varsFoot) +
+      group('Сообщение при отмене', textRow('bCancelText', p.cancelText), 'Предлагается отправить, когда ты отменяешь запись в приложении.');
+    bindSwitch('bOn', 'botBooking');
+    segment($('bMode'), cyc ? 'cycle' : 'week', k => { setPref('scheduleMode', k); render(false); });
+    segment($('bSlot'), fixed ? 'fixed' : 'step', k => { setPref('slotMode', k); render(false); });
+    if (cyc){
+      $('bWork').onchange = e => { setPref('cycleWork', e.target.value); render(false); };
+      $('bOff').onchange = e => { setPref('cycleOff', e.target.value); render(false); };
+      $('bCStart').onchange = e => { if (e.target.value){ setPref('cycleStart', e.target.value); render(false); } };
+    } else $('bDays').onclick = e => { const b = e.target.closest('button'); if (!b) return; b.classList.toggle('on');
+      setPref('workDays', [...$('bDays').querySelectorAll('.on')].map(x => x.dataset.d).join(',')); };
+    if (fixed) $('bFixed').onchange = e => {
+      const list = String(e.target.value).split(/[,;\s]+/).filter(Boolean).map(x => x.replace(/^(\d{1,2})[.:-]?(\d{2})$/, '$1:$2'));
+      const ok = list.filter(x => /^\d{1,2}:\d{2}$/.test(x) && toMin(x) < 1440).map(x => x.padStart(5, '0'));
+      if (!ok.length) return toast('Нужно хотя бы одно время, например 11:00');
+      setPref('fixedTimes', [...new Set(ok)].sort().join(',')); render(false);
+    };
+    else { $('bStart').onchange = e => setPref('workStart', e.target.value); $('bEnd').onchange = e => setPref('workEnd', e.target.value); $('bStep').onchange = e => setPref('slotStep', e.target.value); }
+    $('bDaysAhead').onchange = e => setPref('bookDays', e.target.value);
+    $('bNotice').onchange = e => setPref('bookNotice', e.target.value);
+    bindPref('bText', 'bookedText', DEFAULT_PREFS.bookedText); bindPref('bCancelText', 'cancelText', DEFAULT_PREFS.cancelText);
+  }},
+  telegram: { title:'Telegram-бот', render(){
+    const p = S.prefs, c = S.cfg;
+    const subs = S.clients.filter(x => x.tgStatus === 'linked').length, ok = c.url && c.bot;
+    const mode = c.botMode === 'webhook' ? 'мгновенный' : 'раз в минуту';
+    view.innerHTML =
+      group('Бот', ok
+        ? infoRow('Бот', `<a href="https://t.me/${esc(c.bot)}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none">@${esc(c.bot)}</a>`) + infoRow('Подписчики', subs) +
+          infoRow('Ответы бота', mode) + (c.botMode !== 'webhook' ? actRow('hookOn', 'Включить мгновенный режим') : '') + actRow('tgCheck', 'Проверить связь')
+        : infoRow('Статус', 'Не подключён') + navRow('server', 'Подключить сервер', ''),
+        c.hookError ? `<span class="neg">Мгновенный режим: ${esc(c.hookError)}</span>. Бот работает в режиме «раз в минуту».` : 'В мгновенном режиме бот отвечает на кнопки сразу. Если Google будет мешать, сервер сам переключится на проверку раз в минуту.') +
+      group('Профиль бота', textRow('pShort', p.botShortDescription, 'Короткое описание: видно в профиле бота (до 120 символов)') +
+        textRow('pDesc', p.botDescription, 'Описание: видно на пустом экране чата перед «Старт» (до 512 символов)'), 'Обновляется в Telegram при сохранении.') +
+      group('Приветствие', textRow('pWelcome', p.welcomeText), 'Когда клиент нажимает «Старт».') +
+      group('Напоминания', switchRow('pRem', 'Автоматически', p.reminderEnabled !== '0') +
+        selectRow('pHours', 'За сколько', [1,2,3,6,12,24,48].map(h => [h, `${h} ${plural(h,'час','часа','часов')}`]), p.reminderHours) +
+        switchRow('pAsk', 'Просить подтвердить «+»', p.reminderAskConfirm !== '0') + textRow('pRemText', p.reminderText),
+        'Сервер проверяет записи каждые 5 минут и пишет клиентам со статусом «Записан».') +
+      group('Подтверждение «+» / «−»', textRow('pReq', p.confirmReqText, 'Запрос подтверждения (кнопка «Запросить «+»»)') +
+        textRow('pYes', p.confirmYesText, 'Ответ на «+»') + textRow('pNo', p.confirmNoText, 'Ответ на «−»'),
+        'Клиент может ответить «+», «да», «приду» или «−», «нет», «не смогу».') +
+      group('После записи в приложении', switchRow('pConfOffer', 'Предлагать отправить подтверждение', p.confirmOffer !== '0') + textRow('pConfirm', p.confirmText)) +
+      group('Автоответ', switchRow('pAuto', 'Отвечать на сообщения', p.autoReplyEnabled === '1') + textRow('pAutoText', p.autoReplyText),
+        'Одному человеку не чаще раза в 12 часов.') +
+      group('Отписка', textRow('pStop', p.stopText), 'Ответ на /stop. ' + varsFoot);
+    if ($('tgCheck')) $('tgCheck').onclick = async () => toast(await sync() ? `@${S.cfg.bot} на связи` : 'Ошибка: ' + S.cfg.lastError);
+    if ($('hookOn')) $('hookOn').onclick = async () => { try { const j = await api({action:'hookReset'}); applySnapshot(j); save(); render(false); toast(j.botMode === 'webhook' ? 'Мгновенный режим включён' : 'Не получилось: ' + (j.hookError || 'ошибка')); } catch(e){ toast(e.message); } };
+    bindNav();
+    bindPref('pShort', 'botShortDescription'); bindPref('pDesc', 'botDescription');
+    bindPref('pWelcome', 'welcomeText', DEFAULT_PREFS.welcomeText); bindPref('pConfirm', 'confirmText', DEFAULT_PREFS.confirmText);
+    bindPref('pRemText', 'reminderText', DEFAULT_PREFS.reminderText); bindPref('pAutoText', 'autoReplyText', DEFAULT_PREFS.autoReplyText);
+    bindPref('pStop', 'stopText', DEFAULT_PREFS.stopText); bindPref('pReq', 'confirmReqText', DEFAULT_PREFS.confirmReqText);
+    bindPref('pYes', 'confirmYesText', DEFAULT_PREFS.confirmYesText); bindPref('pNo', 'confirmNoText', DEFAULT_PREFS.confirmNoText);
+    bindSwitch('pConfOffer', 'confirmOffer'); bindSwitch('pRem', 'reminderEnabled'); bindSwitch('pAuto', 'autoReplyEnabled'); bindSwitch('pAsk', 'reminderAskConfirm');
+    $('pHours').onchange = e => setPref('reminderHours', e.target.value);
+  }},
+  server: { title:'Сервер', render(){
+    const c = S.cfg;
+    const status = !c.url ? 'Не подключён' : c.lastError ? `<span class="neg">${esc(c.lastError)}</span>` : c.lastSync ? '<span class="pos">Подключён ✓</span>' : 'Подключаюсь…';
+    view.innerHTML =
+      group('Подключение', inputRow('cUrl', 'Ссылка', c.url, 'placeholder="https://script.google.com/…/exec" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="url"') +
+        inputRow('cPass', 'Пароль', c.password, 'type="password" autocomplete="current-password"') + actRow('cSave', 'Подключиться'),
+        'Ссылка на веб-приложение Apps Script и пароль из функции setup.') +
+      group('Состояние', infoRow('Статус', status) + infoRow('Обновлено', c.lastSync ? fmtWhen(c.lastSync) : '—') + infoRow('Ждут отправки', S.outbox.length)) +
+      (c.url ? group('', actRow('cOff', 'Отключиться от сервера', 'danger'), 'Данные на устройстве сохранятся.') : '');
+    const saveConn = manual => {
+      const url = cleanUrl($('cUrl').value), pass = $('cPass').value;
+      if (url && !SCRIPT_URL_RE.test(url)){
+        toast('Это не ссылка веб-приложения');
+        if (manual) alert('Ссылка должна выглядеть так:\nhttps://script.google.com/macros/s/ДЛИННЫЙ_КОД/exec\n\nВозьми её в Apps Script: Развернуть → Управление развертываниями.');
+        return;
+      }
+      if (!manual && url === c.url && pass === c.password) return;
+      c.url = url; c.password = pass; c.lastError = ''; log('Подключение к серверу: ' + (url || 'отключено')); save();
+      if (url) sync().then(ok => toast(ok ? 'Подключено' : 'Не удалось: ' + S.cfg.lastError)); else render(false);
+    };
+    $('cUrl').onchange = () => saveConn(false); $('cPass').onchange = () => saveConn(false); $('cSave').onclick = () => saveConn(true);
+    if ($('cOff')) $('cOff').onclick = () => { if (confirm('Отключиться от сервера?')){ c.url = ''; c.lastError = ''; c.bot = ''; log('Отключено от сервера'); save(); render(false); } };
+  }},
+  database: { title:'База данных', render(){
+    view.innerHTML =
+      group('Вся база', actRow('dbExport', 'Экспорт базы (.json)') + actRow('dbImport', 'Импорт базы (.json)'),
+        'Клиенты, услуги, записи, настройки и сообщения. Для резервной копии или переноса. При импорте записи с тем же ID заменяются.') +
+      group('Записи', actRow('apExport', 'Выгрузить записи (.csv)') + actRow('apImport', 'Загрузить записи (.csv)'),
+        'Таблица для Excel: дата, время, клиент, телефон, Telegram, услуга, цена, статус. Новые клиенты из файла создаются автоматически.') +
+      group('Журнал сообщений', actRow('msgExport', 'Выгрузить сообщения (.csv)'), 'Все отправленные, запланированные и входящие сообщения со статусами.') +
+      group('', infoRow('Клиентов', S.clients.length) + infoRow('Услуг', S.services.length) + infoRow('Записей', S.appts.length) + infoRow('Сообщений', S.messages.length));
+    $('dbExport').onclick = exportDB; $('dbImport').onclick = () => pickFile('.json,application/json', importDB);
+    $('apExport').onclick = exportAppts; $('apImport').onclick = () => pickFile('.csv,text/csv', importAppts);
+    $('msgExport').onclick = exportMessages;
+  }},
+  debug: { title:'Отладка', render(){
+    const c = S.cfg, lines = S.log.slice(-150).reverse();
+    view.innerHTML =
+      group('Состояние', infoRow('Сеть', navigator.onLine ? 'есть' : '<span class="neg">нет</span>') + infoRow('Сервер', c.url ? (c.lastError ? '<span class="neg">ошибка</span>' : 'подключён') : 'нет') +
+        infoRow('Бот', c.bot ? (c.botMode === 'webhook' ? 'мгновенный' : 'раз в минуту') : '—') +
+        infoRow('Ждут отправки', S.outbox.length) + infoRow('Синхронизация', c.lastSync ? fmtWhen(c.lastSync) : '—') + infoRow('Версия', APP_VERSION)) +
+      (c.lastError ? `<div class="gfoot neg">${esc(c.lastError)}</div>` : '') +
+      group('Действия', actRow('dbgSync', 'Синхронизировать сейчас') + actRow('dbgReload', 'Загрузить всё заново с сервера') + actRow('dbgDrop', 'Очистить очередь отправки', 'danger'),
+        '«Загрузить заново» заменяет данные на устройстве данными с сервера. «Очистить очередь» удаляет неотправленные изменения.') +
+      group('Журнал событий', `<div class="log">${lines.length ? lines.map(l => `<div class="${l.e ? 'e' : ''}">${fmtWhen(l.t)}  ${esc(l.m)}</div>`).join('') : 'Пусто'}</div>`) +
+      group('', actRow('logExport', 'Выгрузить журнал (.txt)') + actRow('logClear', 'Очистить журнал', 'danger'));
+    $('dbgSync').onclick = async () => toast(await sync() ? 'Синхронизировано' : (S.cfg.lastError || 'Нет подключения'));
+    $('dbgReload').onclick = async () => {
+      if (!S.cfg.url) return toast('Сервер не подключён');
+      if (S.outbox.length && !confirm(`${S.outbox.length} изменений ещё не отправлены. Сначала отправить их?`)) return;
+      if (S.outbox.length && !(await sync())) return toast('Не удалось отправить изменения');
+      S.clients = []; S.services = []; S.appts = []; log('Полная перезагрузка данных с сервера');
+      toast(await sync() ? 'Данные загружены с сервера' : 'Ошибка: ' + S.cfg.lastError);
+    };
+    $('dbgDrop').onclick = () => { if (S.outbox.length && confirm(`Удалить ${S.outbox.length} неотправленных изменений?`)){ log(`Очередь очищена (${S.outbox.length})`, true); S.outbox = []; save(); render(false); } };
+    $('logExport').onclick = () => shareFile(`zapisi-log-${today()}.txt`, S.log.map(l => `${l.t}\t${l.e ? 'ОШИБКА' : 'инфо'}\t${l.m}`).join('\n'), 'text/plain');
+    $('logClear').onclick = () => { S.log = []; save(); render(false); };
+  }},
+};
+
+// ---------- файлы ----------
+function pickFile(accept, cb){ const fp = $('filePick'); fp.accept = accept; fp.value = ''; fp.onchange = () => fp.files[0] && cb(fp.files[0]); fp.click(); }
+async function shareFile(name, text, mime){
+  const mobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (mobile && navigator.share && navigator.canShare){
+    for (const type of [mime, 'text/plain']){
+      const file = new File([text], name, {type});
+      if (navigator.canShare({files:[file]})){
+        try { await navigator.share({files:[file], title:name}); return; } catch(e){ if (e.name === 'AbortError') return; }
+        break;
+      }
+    }
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type: mime + ';charset=utf-8'}));
+  a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  toast('Файл сохранён: ' + name);
+}
+const csvCell = v => { const s = String(v ?? ''); return /[;"\n\r]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s; };
+const toCSV = rows => '﻿' + rows.map(r => r.map(csvCell).join(';')).join('\r\n');
+function parseCSV(text){
+  text = text.replace(/^﻿/, '');
+  const firstLine = text.split(/\r?\n/)[0] || '';
+  const d = (firstLine.match(/;/g) || []).length >= (firstLine.match(/,/g) || []).length ? ';' : ',';
+  const rows = []; let row = [], cell = '', q = false;
+  for (let i = 0; i < text.length; i++){
+    const ch = text[i];
+    if (q){ if (ch === '"'){ if (text[i+1] === '"'){ cell += '"'; i++; } else q = false; } else cell += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === d){ row.push(cell); cell = ''; }
+    else if (ch === '\n' || ch === '\r'){ if (ch === '\r' && text[i+1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
+    else cell += ch;
+  }
+  if (cell || row.length){ row.push(cell); rows.push(row); }
+  return rows.filter(r => r.some(c => c.trim()));
+}
+async function exportDB(){
+  let data = {clients:S.clients, services:S.services, appts:S.appts, settings:Object.entries(S.prefs).map(([id,value]) => ({id, value})), messages:S.messages};
+  if (S.cfg.url && navigator.onLine){
+    try { const j = await api({action:'export'}); data = {clients:j.clients, services:j.services, appts:j.appts, settings:j.settings, messages:j.messages}; }
+    catch(e){ toast('Сервер недоступен, выгружаю данные с устройства'); log('Экспорт с сервера не удался: ' + e.message, true); }
+  }
+  const out = {app:'zapisi', version:APP_VERSION, exportedAt:nowISO(), ...data};
+  log(`Экспорт базы: клиентов ${data.clients.length}, записей ${data.appts.length}, сообщений ${data.messages.length}`); save();
+  shareFile(`zapisi-db-${today()}.json`, JSON.stringify(out, null, 2), 'application/json');
+}
+async function importDB(file){
+  let d;
+  try { d = JSON.parse(await file.text()); } catch(e){ return alert('Это не файл базы: ' + e.message); }
+  if (!Array.isArray(d.clients) || !Array.isArray(d.appts)) return alert('В файле нет клиентов и записей. Нужен файл из «Экспорт базы».');
+  if (!confirm(`Импортировать: клиентов ${d.clients.length}, услуг ${(d.services||[]).length}, записей ${d.appts.length}?\nЗаписи с тем же ID будут заменены.`)) return;
+  const strip = r => { const x = {...r}; delete x.deleted; return x; };
+  d.clients.forEach(r => { const x = strip(r); const cur = clientById(x.id); upsert('client', {...x, tgChatId: cur?.tgChatId || x.tgChatId || '', tgStatus: cur?.tgStatus || x.tgStatus || ''}); });
+  (d.services || []).forEach(r => upsert('service', fixRec.service(strip(r))));
+  d.appts.forEach(r => upsert('appt', fixRec.appt(strip(r))));
+  (d.settings || []).forEach(r => { if (r.id in DEFAULT_PREFS) setPref(r.id, String(r.value ?? '')); });
+  log(`Импорт базы из файла: клиентов ${d.clients.length}, записей ${d.appts.length}`);
+  commit(); toast('Импортировано. Отправляю на сервер…');
+}
+const APPT_COLS = ['Дата','Время','Длительность','Клиент','Телефон','Telegram','Услуга','Цена','Статус','Подтверждение','Источник','Комментарий','ID'];
+function exportAppts(){
+  const rows = S.appts.slice().sort((a,b) => (a.date + a.time).localeCompare(b.date + b.time)).map(a => {
+    const c = clientById(a.clientId);
+    return [a.date, a.time, num(a.duration), c?.name || a.clientName, c?.phone || '', c?.tgUsername ? '@' + c.tgUsername : '', svcById(a.serviceId)?.name || a.serviceName || '',
+      num(a.price), STATUS[a.status]?.[0] || a.status, {yes:'подтвердил', no:'не придёт', requested:'ждём ответа'}[a.confirm] || '', a.source === 'bot' ? 'бот' : 'приложение', a.note || '', a.id];
+  });
+  log(`Выгрузка записей: ${rows.length}`); save();
+  shareFile(`zapisi-${today()}.csv`, toCSV([APPT_COLS, ...rows]), 'text/csv');
+}
+async function importAppts(file){
+  const rows = parseCSV(await file.text());
+  if (rows.length < 2) return alert('В файле нет строк с записями');
+  const head = rows[0].map(h => norm(h.trim()));
+  const col = name => head.indexOf(norm(name));
+  if (col('Дата') < 0 || col('Время') < 0 || col('Клиент') < 0) return alert('Нужны колонки: Дата, Время, Клиент (как в выгрузке записей).');
+  const statusByLabel = Object.fromEntries(Object.entries(STATUS).map(([k,[l]]) => [norm(l), k]));
+  let added = 0, updated = 0, skipped = 0, newClients = 0;
+  rows.slice(1).forEach(r => {
+    const g = n => { const i = col(n); return i < 0 ? '' : String(r[i] ?? '').trim(); };
+    let date = g('Дата'); const m = date.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+    if (m) date = `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+    let time = g('Время'); if (/^\d{1,2}:\d{2}/.test(time)) time = time.slice(0, 5).padStart(5, '0');
+    const name = g('Клиент');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(time) || !name){ skipped++; return; }
+    let c = S.clients.find(x => norm(x.name) === norm(name));
+    if (!c){ c = {id:uid(), name, phone:g('Телефон'), tgUsername:cleanUser(g('Telegram')), notes:''}; upsert('client', c); newClients++; }
+    else if (!c.tgUsername && g('Telegram') && c.tgStatus !== 'linked'){ upsert('client', {...c, tgUsername:cleanUser(g('Telegram'))}); }
+    const svcName = g('Услуга'), s = S.services.find(x => norm(x.name) === norm(svcName));
+    const st = g('Статус'), status = STATUS[st] ? st : statusByLabel[norm(st)] || 'booked';
+    const id = g('ID') || uid(), exists = S.appts.some(a => a.id === id);
+    upsert('appt', {...(S.appts.find(a => a.id === id) || {}), id, date, time, duration: Math.round(num(g('Длительность'))) || num(s?.duration) || 60,
+      clientId:c.id, clientName:c.name, serviceId:s?.id || '', serviceName:s?.name || svcName, price:num(g('Цена')), status, note:g('Комментарий')});
+    exists ? updated++ : added++;
+  });
+  log(`Загрузка записей из CSV: новых ${added}, обновлено ${updated}, пропущено ${skipped}, новых клиентов ${newClients}`);
+  commit();
+  alert(`Готово.\nНовых записей: ${added}\nОбновлено: ${updated}\nНовых клиентов: ${newClients}${skipped ? `\nПропущено строк с ошибками: ${skipped}` : ''}`);
+}
+async function exportMessages(){
+  let msgs = S.messages;
+  if (S.cfg.url && navigator.onLine){ try { msgs = (await api({action:'export'})).messages; } catch(e){ toast('Сервер недоступен, выгружаю сообщения с устройства'); } }
+  const kinds = {broadcast:'рассылка', reminder:'напоминание', confirmreq:'запрос подтверждения', welcome:'приветствие', autoreply:'автоответ', confirm:'подтверждение', incoming:'входящее', manual:'личное', system:'системное', booking:'запись через бота'};
+  const st = {sent:'отправлено', queued:'в очереди', scheduled:'запланировано', canceled:'отменено', error:'ошибка', received:'получено'};
+  const rows = msgs.slice().sort((a,b) => (a.createdAt||'').localeCompare(b.createdAt||'')).map(m =>
+    [m.createdAt ? new Date(m.createdAt).toLocaleString('ru-RU') : '', m.direction === 'in' ? 'входящее' : 'исходящее', kinds[m.kind] || m.kind, m.clientName, m.text,
+     st[m.status] || m.status, m.scheduledAt ? new Date(m.scheduledAt).toLocaleString('ru-RU') : '', m.error]);
+  shareFile(`zapisi-messages-${today()}.csv`, toCSV([['Время','Направление','Тип','Клиент','Текст','Статус','Запланировано на','Ошибка'], ...rows]), 'text/csv');
+}
+
+// ---------- уведомление ----------
+let toastT;
+function toast(msg){ const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
+
+// ---------- шторки ----------
+const sheet = $('sheet'), form = $('sheetForm');
+let sheetStack = [], closeT = null;
+function openSheet(html, bind){
+  chatOpen = null; sheet.classList.remove('chat-mode');
+  form.innerHTML = '<div class="grab" tabindex="-1" autofocus></div>' + html; form.onsubmit = e => e.preventDefault(); bind();
+  clearTimeout(closeT); sheet.classList.remove('closing'); if (!sheet.open) sheet.showModal(); sheet.scrollTop = 0;
+  // клавиатура появляется только когда пользователь сам нажмёт на поле
+  const a = document.activeElement;
+  if (a && a !== form.querySelector('.grab') && /INPUT|TEXTAREA|SELECT/.test(a.tagName)) a.blur();
+  form.querySelector('.grab').focus({preventScroll:true});
+}
+function finishClose(){ sheet.close(); sheet.classList.remove('closing', 'chat-mode'); chatOpen = null; if (!setPath.length) render(false); }
+function closeSheet(){
+  if (!sheet.open || sheet.classList.contains('closing')) return;
+  if (sheetStack.length){ sheetStack.pop()(); return; }
+  sheet.classList.add('closing');
+  closeT = setTimeout(finishClose, 200);
+}
+function closeAll(){ sheetStack = []; closeSheet(); }
+sheet.addEventListener('cancel', e => { e.preventDefault(); closeSheet(); });
+sheet.addEventListener('click', e => { if (e.target === sheet) closeAll(); });
+// закрытие свайпом вниз с любого места (когда содержимое прокручено к началу)
+(() => {
+  let y0 = 0, x0 = 0, t0 = 0, dy = 0, mode = null;
+  const wide = () => matchMedia('(min-width:768px)').matches;
+  sheet.addEventListener('touchstart', e => {
+    if (wide() || e.touches.length > 1){ mode = 'skip'; return; }
+    const t = e.target;
+    const msgs = t.closest('.chat-msgs');
+    mode = t.closest('textarea, .combo-list, select, input[type=date], input[type=datetime-local], .composer') || (msgs && msgs.scrollTop > 0) ? 'skip' : null;
+    y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; t0 = Date.now(); dy = 0;
+  }, {passive:true});
+  sheet.addEventListener('touchmove', e => {
+    if (mode === 'skip') return;
+    const d = e.touches[0].clientY - y0, dx = e.touches[0].clientX - x0;
+    if (mode === null){
+      if (Math.abs(d) < 6 && Math.abs(dx) < 6) return;
+      const msgs = e.target.closest('.chat-msgs');
+      mode = d > 0 && Math.abs(d) > Math.abs(dx) && sheet.scrollTop <= 0 && (!msgs || msgs.scrollTop <= 0) ? 'drag' : 'skip';
+      if (mode === 'drag'){ sheet.style.transition = 'none'; document.activeElement?.blur?.(); }
+    }
+    if (mode !== 'drag') return;
+    e.preventDefault();
+    dy = Math.max(0, d);
+    sheet.style.transform = `translateY(${dy}px)`;
+  }, {passive:false});
+  const end = () => {
+    if (mode !== 'drag'){ mode = null; return; }
+    mode = null;
+    const v = dy / Math.max(1, Date.now() - t0);
+    if (dy > Math.min(140, sheet.offsetHeight * 0.25) || (v > 0.6 && dy > 30)){
+      sheetStack = [];
+      sheet.style.transition = 'transform .22s ease-in'; sheet.style.transform = 'translateY(100%)';
+      sheet.classList.add('drag-closing');
+      setTimeout(() => { finishClose(); sheet.classList.remove('drag-closing'); sheet.style.transition = ''; sheet.style.transform = ''; }, 220);
+    } else {
+      sheet.style.transition = 'transform .3s var(--ease)'; sheet.style.transform = '';
+      setTimeout(() => { sheet.style.transition = ''; }, 300);
+    }
+  };
+  sheet.addEventListener('touchend', end);
+  sheet.addEventListener('touchcancel', end);
+})();
+function segment(el, value, onChange){
+  const btns = [...el.querySelectorAll('button')];
+  const pill = document.createElement('i'); pill.className = 'pill'; el.prepend(pill);
+  const place = () => { const i = Math.max(0, btns.findIndex(b => b.dataset.k === value));
+    pill.style.width = `calc((100% - 8px) / ${btns.length})`; pill.style.transform = `translateX(${i * 100}%)`;
+    btns.forEach(b => b.classList.toggle('on', b.dataset.k === value)); };
+  el.onclick = e => { const b = e.target.closest('button'); if (b && b.dataset.k !== value){ value = b.dataset.k; place(); onChange(value); } };
+  place();
+}
+function clientPicker(onChange){
+  const inp = $('aClient'), list = $('aClientList');
+  let act = -1, items = [];
+  const draw = () => {
+    const raw = inp.value.trim(), q = norm(raw);
+    items = S.clients.filter(c => !q || norm(c.name + ' ' + c.phone + ' @' + (c.tgUsername || '')).includes(q)).sort((a,b) => a.name.localeCompare(b.name,'ru')).slice(0, 50);
+    if (raw && !S.clients.some(c => norm(c.name) === q)) items.push({newName: raw});
+    act = Math.min(act, items.length - 1);
+    list.innerHTML = items.map((c,i) => c.newName
+      ? `<button type="button" class="opt custom ${i===act?'act':''}" data-i="${i}">+ Новый клиент «${esc(c.newName)}»</button>`
+      : `<button type="button" class="opt ${i===act?'act':''}" data-i="${i}">${esc(c.name)}<small>${esc([c.phone, c.tgUsername ? '@' + c.tgUsername : ''].filter(Boolean).join(' · '))}</small></button>`).join('')
+      || '<div class="hint" style="padding:6px 12px">Начни вводить имя</div>';
+  };
+  const pick = i => { const c = items[i]; if (!c) return; list.hidden = true;
+    if (c.newName){ inp.value = c.newName; onChange(null, c.newName); } else { inp.value = c.name; onChange(c.id); } };
+  inp.addEventListener('focus', () => { act = -1; draw(); list.hidden = false; });
+  inp.addEventListener('input', () => { act = -1; draw(); list.hidden = false; onChange(null, inp.value.trim()); });
+  inp.addEventListener('blur', () => setTimeout(() => { list.hidden = true; }, 150));
+  inp.addEventListener('keydown', e => {
+    if (list.hidden || !items.length) return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp'){ e.preventDefault(); act = (act + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length; draw(); list.querySelector('.act')?.scrollIntoView({block:'nearest'}); }
+    else if (e.key === 'Enter' && act >= 0){ e.preventDefault(); pick(act); }
+    else if (e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); list.hidden = true; }
+  });
+  list.addEventListener('pointerdown', e => e.preventDefault());
+  list.addEventListener('click', e => { const o = e.target.closest('.opt'); if (o) pick(+o.dataset.i); });
+}
+
+// ---------- запись ----------
+function defaultTime(date){
+  if (S.prefs.slotMode === 'fixed'){
+    const busy = S.appts.filter(a => a.date === date && a.status === 'booked').map(a => a.time);
+    const now = Date.now();
+    const free = fixedTimes().find(t => !busy.includes(t) && (date !== today() || apptTime({date, time:t}) > now));
+    if (free) return free;
+  }
+  if (date !== today()) return S.prefs.workStart || '10:00';
+  const n = new Date(); return fromMin(Math.min(23*60 + 50, Math.ceil((n.getHours() * 60 + n.getMinutes() + 30) / 10) * 10));
+}
+function timeSelects(value){
+  const [h, m] = String(value || '10:00').split(':').map(Number);
+  const mins = [0,10,20,30,40,50]; if (!mins.includes(m)) mins.push(m), mins.sort((a,b) => a - b);
+  return `<div class="timepick"><select id="aH" aria-label="Часы">${Array.from({length:24}, (_, i) => `<option value="${i}" ${i===h?'selected':''}>${pad(i)}</option>`).join('')}</select>
+    <span>:</span><select id="aM" aria-label="Минуты">${mins.map(x => `<option value="${x}" ${x===m?'selected':''}>${pad(x)}</option>`).join('')}</select></div>`;
+}
+function openApptForm(a, date){
+  const edit = !!a && S.appts.some(x => x.id === a.id);
+  a = a ? {...a} : {id:uid(), date: date || selDate, time: defaultTime(date || selDate), duration:60, clientId:'', serviceId:'', price:'', status:'booked', note:''};
+  let clientId = a.clientId, newName = '';
+  const c0 = clientById(a.clientId);
+  const conf = edit && a.status === 'booked' && CONFIRM[a.confirm];
+  openSheet(`
+    <h3>${edit ? 'Запись' : 'Новая запись'}</h3>
+    ${edit && (a.source === 'bot' || conf) ? `<p class="hint" style="margin-top:-6px">${a.source === 'bot' ? '<span class="tag bot">через бота</span> ' : ''}${conf ? `<span class="${conf[1]}">${conf[0]}</span>` : ''}</p>` : ''}
+    <label for="aClient">Клиент</label>
+    <input id="aClient" value="${esc(c0?.name || a.clientName || '')}" placeholder="Имя, телефон или @telegram" autocomplete="off" autocorrect="off" spellcheck="false">
+    <div class="combo-list" id="aClientList" hidden></div>
+    <div id="newWrap" hidden><div class="two"><div><label for="aPhone">Телефон</label><input id="aPhone" type="tel" inputmode="tel" placeholder="+7 900…" autocomplete="off"></div>
+      <div><label for="aTg">Telegram</label><input id="aTg" placeholder="@username" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off"></div></div></div>
+    <label for="aSvc">Услуга</label>
+    <select id="aSvc"><option value="">Без услуги</option>${S.services.slice().sort((x,y) => x.name.localeCompare(y.name,'ru')).map(s => `<option value="${s.id}" ${s.id===a.serviceId?'selected':''}>${esc(s.name)} · ${num(s.duration)} мин${s.price ? ' · ' + money(num(s.price)) : ''}</option>`).join('')}</select>
+    <div class="two"><div><label for="aDate">Дата</label><input type="date" id="aDate" value="${a.date}"></div>
+      <div><label for="aH">Время</label>${timeSelects(a.time)}</div></div>
+    <div class="timehint" id="aHint"></div>
+    <div class="two"><div><label for="aDur">Длительность, мин</label><input id="aDur" inputmode="numeric" value="${a.duration || ''}"></div>
+      <div><label for="aPrice">Цена, ₽</label><input id="aPrice" inputmode="decimal" value="${a.price || ''}"></div></div>
+    ${edit && a.status === 'booked' ? `<div class="btns" style="margin-top:14px"><button type="button" class="btn primary" id="aDone">✓ Завершить</button><button type="button" class="btn danger" id="aCancelAppt">✕ Отменить</button></div>` : ''}
+    ${edit ? `<label>Статус</label><div class="seg" id="aStatus">${Object.entries(STATUS).map(([k,[l]]) => `<button type="button" data-k="${k}">${l}</button>`).join('')}</div>` : ''}
+    <label for="aNote">Комментарий</label><input id="aNote" value="${esc(a.note || '')}" placeholder="Необязательно" autocomplete="off">
+    <div id="tgActions"></div>
+    <div class="btns">${edit ? '<button type="button" class="btn danger" id="aDel">Удалить</button>' : '<button type="button" class="btn" id="aCancel">Отмена</button>'}
+      <button type="submit" class="btn primary">Сохранить</button></div>`, () => {
+    let status = a.status;
+    const readTime = () => `${pad($('aH').value)}:${pad($('aM').value)}`;
+    const readForm = () => {
+      const r = {...a, serviceId: $('aSvc').value, date: $('aDate').value, time: readTime(), duration: Math.max(5, Math.round(num($('aDur').value)) || 60),
+        price: num($('aPrice').value), note: $('aNote').value.trim(), status, clientId};
+      if (!r.date){ toast('Укажи дату'); return null; }
+      const s = svcById(r.serviceId); r.serviceName = s ? s.name : '';
+      return r;
+    };
+    const clashOf = r => S.appts.find(x => x.id !== r.id && x.date === r.date && x.status === 'booked' && r.status === 'booked' &&
+      toMin(x.time) < toMin(r.time) + r.duration && toMin(r.time) < toMin(x.time) + (num(x.duration) || 60));
+    const hint = () => {
+      const r = readForm(); if (!r) return;
+      const cl = clashOf(r);
+      $('aHint').innerHTML = `<span>до ${fromMin(toMin(r.time) + r.duration)}</span>${cl ? `<span class="neg">⚠ пересекается: ${cl.time} ${esc(clientById(cl.clientId)?.name || cl.clientName || '')}</span>` : ''}`;
+    };
+    ['aH','aM','aDate','aDur'].forEach(id => $(id).addEventListener('change', hint)); $('aDur').addEventListener('input', hint);
+    const tgBox = () => {
+      const c = clientById(clientId);
+      if (!edit || !c){ $('tgActions').innerHTML = ''; return; }
+      const linked = c.tgStatus === 'linked';
+      $('tgActions').innerHTML = `<div class="btns">
+        <button type="button" class="btn tg" id="aChat">💬 Чат</button>
+        ${linked && status === 'booked' && a.confirm !== 'yes' ? '<button type="button" class="btn tg" id="aAsk">Запросить «+»</button>' : ''}</div>`;
+      $('aChat').onclick = () => { const cur = readForm(); sheetStack.push(() => openApptForm(cur || a)); openChat(c, a); };
+      if ($('aAsk')) $('aAsk').onclick = () => { const cur = readForm(); if (!cur) return; sheetStack.push(() => openApptForm(cur)); openConfirmRequest(a); };
+    };
+    clientPicker((id, typed) => { clientId = id || ''; newName = id ? '' : (typed || ''); $('newWrap').hidden = !!id || !newName; tgBox(); });
+    tgBox(); hint();
+    $('aSvc').onchange = () => { const s = svcById($('aSvc').value); if (!s) return; $('aDur').value = num(s.duration) || 60; if (s.price) $('aPrice').value = num(s.price); hint(); };
+    if (edit) segment($('aStatus'), status, k => { status = k; tgBox(); hint(); });
+    if ($('aCancel')) $('aCancel').onclick = closeAll;
+    if ($('aDel')) $('aDel').onclick = () => { if (confirm('Удалить запись насовсем? Лучше «Отменить запись» — она останется в истории.')){ remove('appt', a.id); closeAll(); commit(); toast('Запись удалена'); } };
+    if ($('aDone')) $('aDone').onclick = () => { const cur = readForm(); if (!cur) return; sheetStack.push(() => openApptForm(cur)); openCompleteForm(cur); };
+    if ($('aCancelAppt')) $('aCancelAppt').onclick = () => { const cur = readForm(); if (cur) cancelAppt(cur); };
+    form.onsubmit = e => {
+      e.preventDefault();
+      const r = readForm(); if (!r) return;
+      if (!clientId){
+        if (!newName){ toast('Выбери клиента'); return; }
+        const c = {id:uid(), name:newName, phone:$('aPhone').value.trim(), tgUsername:cleanUser($('aTg').value), notes:''};
+        upsert('client', c); r.clientId = c.id;
+      }
+      r.clientName = clientById(r.clientId)?.name || '';
+      if (edit && (r.date !== a.date || r.time !== a.time)) r.confirm = '';
+      const clash = clashOf(r);
+      if (clash && !confirm(`Пересекается с записью ${clash.time}, ${clientById(clash.clientId)?.name || clash.clientName}. Всё равно сохранить?`)) return;
+      upsert('appt', r);
+      selDate = r.date; const d = parseYMD(r.date); calY = d.getFullYear(); calM = d.getMonth();
+      closeAll(); commit(); toast(edit ? 'Сохранено' : 'Клиент записан');
+      const c = clientById(r.clientId);
+      if (!edit && c?.tgStatus === 'linked' && S.cfg.url && S.prefs.confirmOffer !== '0')
+        setTimeout(() => { if (confirm(`Отправить ${c.name} подтверждение записи в Telegram?`)) sendMessages([{clientId:c.id, apptId:r.id, kind:'confirm', text: fillTpl(S.prefs.confirmText, c, r)}]); }, 350);
+    };
+  });
+}
+
+function openCompleteForm(a){
+  const c = clientById(a.clientId);
+  openSheet(`
+    <h3>Завершить запись</h3>
+    <p class="hint" style="margin-top:0">${esc(c?.name || a.clientName || 'Клиент')} · ${fmtDate(a.date)} в ${esc(a.time)}${a.serviceName ? ' · ' + esc(a.serviceName) : ''}</p>
+    <label for="dAmt">Получено, ₽</label>
+    <input id="dAmt" inputmode="decimal" value="${num(a.price) || ''}" placeholder="0" style="font:800 28px var(--f-wide);height:68px">
+    <p class="hint">Сумма попадёт в статистику «Заработано» за ${MONTH_NOM(parseYMD(a.date).getMonth()).toLowerCase()}.</p>
+    <div class="btns"><button type="button" class="btn" id="dBack">Назад</button><button type="submit" class="btn primary">Завершить</button></div>`, () => {
+    $('dBack').onclick = closeSheet;
+    form.onsubmit = e => {
+      e.preventDefault();
+      const amount = num($('dAmt').value);
+      upsert('appt', {...a, status:'done', price: amount});
+      closeAll(); commit(); toast('Завершено' + (amount ? ' · +' + money(amount) : ''));
+    };
+  });
+}
+function cancelAppt(a){
+  if (!confirm('Отменить запись? Она останется в истории со статусом «Отменено».')) return;
+  upsert('appt', {...a, status:'canceled'});
+  closeAll(); commit(); toast('Запись отменена');
+  const c = clientById(a.clientId);
+  if (c?.tgStatus === 'linked' && S.cfg.url && apptTime(a) > Date.now())
+    setTimeout(() => { if (confirm(`Сообщить ${c.name} об отмене в Telegram?`)) sendMessages([{clientId:c.id, apptId:a.id, kind:'manual', text: fillTpl(S.prefs.cancelText, c, a)}]); }, 350);
+}
+function openClientForm(c){
+  const edit = !!c;
+  c = c ? {...c} : {id:uid(), name:'', phone:'', notes:''};
+  openSheet(`
+    <h3>${edit ? 'Изменить клиента' : 'Новый клиент'}</h3>
+    <label for="cName">Имя</label><input id="cName" value="${esc(c.name)}" placeholder="Анна Иванова" autocomplete="off">
+    <label for="cPhone">Телефон</label><input id="cPhone" type="tel" inputmode="tel" value="${esc(c.phone)}" placeholder="+7 900 000-00-00" autocomplete="off">
+    <label for="cTg">Telegram</label><input id="cTg" value="${c.tgUsername ? '@' + esc(c.tgUsername) : ''}" placeholder="@username" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="off" ${c.tgStatus === 'linked' ? 'readonly' : ''}>
+    ${c.tgStatus === 'linked' ? '<p class="hint">Привязан через бота, юзернейм обновляется сам.</p>' : '<p class="hint">Если клиент с этим юзернеймом нажмёт «Старт» в боте, он привяжется к этой карточке.</p>'}
+    <label for="cNotes">Заметки</label><textarea id="cNotes" placeholder="Аллергии, предпочтения, мастер…">${esc(c.notes)}</textarea>
+    <div class="btns">${edit ? '<button type="button" class="btn danger" id="cDel">Удалить</button>' : '<button type="button" class="btn" id="cCancel">Отмена</button>'}
+      <button type="submit" class="btn primary">Сохранить</button></div>`, () => {
+    if ($('cCancel')) $('cCancel').onclick = closeSheet;
+    if ($('cDel')) $('cDel').onclick = () => {
+      const n = S.appts.filter(a => a.clientId === c.id).length;
+      if (!confirm(n ? `Удалить клиента и ${n} ${plural(n,'запись','записи','записей')}?` : 'Удалить клиента?')) return;
+      S.appts.filter(a => a.clientId === c.id).forEach(a => remove('appt', a.id));
+      remove('client', c.id); closeAll(); commit(); toast('Клиент удалён');
+    };
+    form.onsubmit = e => {
+      e.preventDefault();
+      c.name = $('cName').value.trim(); if (!c.name){ toast('Введи имя'); return; }
+      c.phone = $('cPhone').value.trim(); c.notes = $('cNotes').value.trim();
+      if (c.tgStatus !== 'linked') c.tgUsername = cleanUser($('cTg').value);
+      upsert('client', c); save(); sync(); toast('Сохранено');
+      if (edit) closeSheet(); else { sheetStack = []; openClientCard(clientById(c.id)); }
+    };
+  });
+}
+function openClientCard(c){
+  if (!c) return;
+  const appts = S.appts.filter(a => a.clientId === c.id).sort((a,b) => apptTime(b) - apptTime(a));
+  const done = appts.filter(a => a.status === 'done');
+  const spent = done.reduce((s,a) => s + num(a.price), 0);
+  const link = inviteLink(c), linked = c.tgStatus === 'linked';
+  openSheet(`
+    <div style="display:flex;align-items:center;gap:14px;margin:0 0 6px"><div class="ava round-a" style="width:60px;height:60px;font-size:18px">${esc(initials(c.name))}</div>
+      <div style="flex:1;min-width:0"><h3 style="margin:0">${esc(c.name)}</h3>${c.phone ? `<a href="tel:${esc(c.phone.replace(/[^\d+]/g,''))}" style="color:var(--accent);text-decoration:none">${esc(c.phone)}</a>` : ''}</div>
+      <button type="button" class="pillbtn" id="ccEdit">Изменить</button></div>
+    <div class="card" style="margin:14px 0">
+      <div class="lbl">Потратил</div><div class="wide" style="font-size:30px;color:var(--accent);margin:8px 0 2px">${money(spent)}</div>
+      <div class="hint" style="margin:0">${done.length} ${plural(done.length,'визит','визита','визитов')}</div>
+      <div class="kv" style="margin-top:10px"><span>Telegram</span><b style="font-weight:600">${linked ? `<span style="color:var(--tg)">подписан${c.tgUsername ? ' · @' + esc(c.tgUsername) : ''}</span>`
+        : c.tgStatus === 'blocked' || c.tgStatus === 'stopped' ? '<span class="neg">отписался</span>' : c.tgUsername ? '@' + esc(c.tgUsername) + ' · не подписан' : 'не подключён'}</b></div>
+    </div>
+    ${c.notes ? `<div class="preview" style="border-radius:22px;margin-bottom:6px">${esc(c.notes)}</div>` : ''}
+    <div class="btns" style="margin-top:12px"><button type="button" class="btn primary" id="ccBook">Записать</button>
+      ${linked ? '<button type="button" class="btn tg" id="ccMsg">💬 Чат</button>' : link ? '<button type="button" class="btn tg" id="ccInvite">Пригласить</button>' : ''}</div>
+    ${!linked && link ? '<p class="hint">Отправь клиенту ссылку на бота. Когда он нажмёт «Старт», Telegram привяжется к этой карточке.</p>' : ''}
+    <div class="sec"><span class="lbl">Записи</span></div>
+    <div class="rows">${appts.length ? appts.slice(0, 20).map(a => apptItem(a, true)).join('') : '<div class="empty">Записей ещё не было</div>'}</div>
+    <div class="btns"><button type="button" class="btn" id="ccClose">Закрыть</button></div>`, () => {
+    const back = () => openClientCard(clientById(c.id));
+    $('ccClose').onclick = closeAll;
+    $('ccEdit').onclick = () => { sheetStack.push(back); openClientForm(c); };
+    $('ccBook').onclick = () => { sheetStack = []; openApptForm({id:uid(), date:selDate, time:defaultTime(selDate), duration:60, clientId:c.id, clientName:c.name, serviceId:'', price:'', status:'booked', note:''}); };
+    if ($('ccMsg')) $('ccMsg').onclick = () => { sheetStack.push(back); openChat(c); };
+    if ($('ccInvite')) $('ccInvite').onclick = () => invite(c);
+    form.querySelectorAll('[data-appt]').forEach(el => el.onclick = () => { sheetStack.push(back); openApptForm(S.appts.find(a => a.id === el.dataset.appt)); });
+  });
+}
+async function invite(c){
+  if (S.outbox.some(o => o.kind === 'client' && o.data.id === c.id)){
+    if (!navigator.onLine){ toast('Нужен интернет, чтобы сохранить клиента на сервере'); return; }
+    await sync();
+  }
+  const text = `${S.prefs.businessName ? S.prefs.businessName + ': п' : 'П'}одпишитесь на напоминания о записях в Telegram 👉 ${inviteLink(c)}`;
+  if (navigator.share){ try { await navigator.share({text}); return; } catch(e){ if (e.name === 'AbortError') return; } }
+  try { await navigator.clipboard.writeText(text); toast('Ссылка скопирована'); }
+  catch(e){ prompt('Скопируй и отправь клиенту:', text); }
+}
+function openServiceForm(s){
+  const edit = !!s;
+  s = s ? {...s} : {id:uid(), name:'', duration:60, price:''};
+  openSheet(`
+    <h3>${edit ? 'Услуга' : 'Новая услуга'}</h3>
+    <label for="sName">Название</label><input id="sName" value="${esc(s.name)}" placeholder="Маникюр с покрытием" autocomplete="off">
+    <div class="two"><div><label for="sDur">Длительность, мин</label><input id="sDur" inputmode="numeric" value="${s.duration || ''}"></div>
+      <div><label for="sPrice">Цена, ₽</label><input id="sPrice" inputmode="decimal" value="${s.price || ''}"></div></div>
+    <div class="btns">${edit ? '<button type="button" class="btn danger" id="sDel">Удалить</button>' : '<button type="button" class="btn" id="sCancel">Отмена</button>'}
+      <button type="submit" class="btn primary">Сохранить</button></div>`, () => {
+    if ($('sCancel')) $('sCancel').onclick = closeAll;
+    if ($('sDel')) $('sDel').onclick = () => { if (confirm('Удалить услугу? Прошлые записи сохранятся.')){ remove('service', s.id); closeAll(); commit(); } };
+    form.onsubmit = e => {
+      e.preventDefault();
+      s.name = $('sName').value.trim(); if (!s.name){ toast('Введи название'); return; }
+      s.duration = Math.max(5, Math.round(num($('sDur').value)) || 60); s.price = num($('sPrice').value);
+      upsert('service', s); closeAll(); commit(); toast('Сохранено');
+    };
+  });
+}
+
+// ---------- события ----------
+document.querySelector('nav.tabs').onclick = e => { const b = e.target.closest('.tab'); if (b) go(b.dataset.tab); };
+$('fab').onclick = () => {
+  sheetStack = [];
+  if (tab === 'clients') openClientForm();
+  else if (tab === 'chats') openBroadcast();
+  else openApptForm(null, tab === 'cal' ? selDate : today());
+};
+view.addEventListener('click', e => {
+  if (setPath.length) return;
+  const it = e.target.closest('.item'); if (!it) return;
+  sheetStack = [];
+  if (it.dataset.appt) openApptForm(S.appts.find(a => a.id === it.dataset.appt));
+  else if (it.dataset.client) openClientCard(clientById(it.dataset.client));
+});
+document.addEventListener('pointerdown', e => { if (e.pointerType === 'touch' && e.target.closest('button,.item') && navigator.vibrate) navigator.vibrate(6); }, {passive:true});
+document.addEventListener('keydown', e => {
+  if (sheet.open || e.metaKey || e.ctrlKey || e.altKey || /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName)) return;
+  if (e.key === 'n' || e.key === 'т' || e.key === '+'){ e.preventDefault(); $('fab').click(); }
+  if (e.key === ',' && !setPath.length){ e.preventDefault(); openSettingsPage('root'); }
+  if (e.key === 'Escape' && setPath.length){ e.preventDefault(); history.back(); }
+  if (!setPath.length && tab === 'cal' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) shiftMonth(e.key === 'ArrowRight' ? 1 : -1);
+});
+
+if ('serviceWorker' in navigator && location.protocol !== 'file:'){
+  navigator.serviceWorker.register('sw.js');
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data !== 'updated') return;
+    const t = $('toast'); t.innerHTML = 'Есть обновление · <u>обновить</u>'; t.classList.add('show'); clearTimeout(toastT);
+    t.onclick = () => location.reload();
+    toastT = setTimeout(() => { t.classList.remove('show'); t.onclick = null; }, 8000);
+  });
+}
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
+history.replaceState({set:0}, '');
+applyTheme(); render('in'); sync();
+</script>
+</body>
+</html>
